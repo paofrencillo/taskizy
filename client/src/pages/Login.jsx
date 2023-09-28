@@ -1,6 +1,6 @@
 import { MdMail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, Navigate, redirect } from "react-router-dom";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,6 +10,12 @@ import TokenServices from "../services/tokenServices";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const token = TokenServices.getToken().refresh;
+
+  if (token) {
+    return <Navigate to={"/dashboard"} />;
+  }
 
   function handleLoginFormSubmit(e) {
     e.preventDefault();
@@ -23,6 +29,7 @@ export default function Login() {
       try {
         if (res.status === 200) {
           TokenServices.saveToken(res.data);
+          return redirect("/dashboard");
         } else if (res.status === 401) {
           console.error("401 Unauthorized");
           toast.error("Invalid username or password", {
@@ -66,6 +73,7 @@ export default function Login() {
                 name="email"
                 className="rounded-r-md bg-gray-50 border text-gray-700  flex-1 min-w-0 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-2.5 group"
                 placeholder="me@email.com"
+                required
               />
             </div>
             <label
@@ -84,6 +92,7 @@ export default function Login() {
                 name="password"
                 className="rounded-r-md bg-gray-50 border text-gray-900  flex-1 min-w-0 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-2.5"
                 placeholder="Enter your password"
+                required
               />
             </div>
             <button

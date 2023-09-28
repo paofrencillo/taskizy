@@ -1,17 +1,34 @@
 import {
-  AiOutlinePlusCircle,
-  AiOutlineSearch,
+  // AiOutlinePlusCircle,
+  // AiOutlineSearch,
   AiOutlineLogout,
 } from "react-icons/ai";
 
 import { LuLayoutDashboard } from "react-icons/lu";
 import { BiDoorOpen, BiTask } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import TokenServices from "../../services/tokenServices";
+import AuthServices from "../../services/AuthServices";
 
-export default function Navbar() {
+export default function Navbar(props) {
   //   const checkPathName = () => {
   //     return window.location.pathname;
   //   };
+
+  async function handleLogout() {
+    try {
+      const response = await AuthServices.logout();
+      if (response.status === 205) {
+        console.log(response.status);
+        TokenServices.destroyToken();
+        return (window.location = "/");
+      } else if (response.status === 401) {
+        console.error("401 Forbidden");
+      }
+    } catch (error) {
+      return (window.location = "/500");
+    }
+  }
 
   return (
     <>
@@ -54,10 +71,13 @@ export default function Navbar() {
                 />
               </div>
               <p className="max-w-[120px] text-sm text-gray-400 text-ellipsis whitespace-nowrap overflow-hidden mr-2 group-hover:text-purple-400">
-                Abdul Saaaaaaaaaaaaaaaaa
+                {props.name}
               </p>
             </div>
-            <AiOutlineLogout className="text-2xl text-gray-400 hover:text-purple-400 cursor-pointer" />
+            <AiOutlineLogout
+              className="text-2xl text-gray-400 hover:text-purple-400 cursor-pointer"
+              onClick={handleLogout}
+            />
           </div>
         </div>
       </nav>

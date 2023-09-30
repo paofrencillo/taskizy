@@ -13,3 +13,5 @@ export const API_AUTH_JWT_REFRESH_URL = `${API_BASE_URL}auth/jwt/refresh/`;
 export const API_AUTH_RESET_PASSWORD_URL = `${API_BASE_URL}auth/users/reset_password/`;
 
 export const API_AUTH_SET_NEW_PASSWORD_URL = `${API_BASE_URL}auth/users/set_password/`;
+
+export const API_ROOMS_URL = `${API_BASE_URL}rooms/`;

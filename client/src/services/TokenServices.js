@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { API_AUTH_JWT_REFRESH_URL } from "../config/apiUrls";
-
+import AuthServices from "./AuthServices";
 const saveToken = (token) => {
   localStorage.setItem("refresh", token.refresh);
   localStorage.setItem("access", token.access);
@@ -27,17 +27,16 @@ const refreshTokens = () => {
       axios
         .post(API_AUTH_JWT_REFRESH_URL, { refresh: refresh })
         .then((response) => {
-          console.log(response.data.access);
           localStorage.setItem("access", response.data.access);
           return response;
         })
         .catch((error) => {
-          return error.response;
+          return error.response.status;
         });
     }
 
     if (rtExpDate <= currentDateTime) {
-      console.log("!!!!!!!!!! Refresh Token Expired");
+      destroyToken();
       return;
     }
   } else {

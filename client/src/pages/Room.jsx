@@ -7,7 +7,6 @@ export default function Room() {
   return (
     <div>
       <Navbar name={user.fullName} />
-      Room
     </div>
   );
 }

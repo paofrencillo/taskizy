@@ -3,7 +3,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
-from .models import User
+
 
 User = get_user_model()
 
@@ -11,13 +11,39 @@ User = get_user_model()
 class CreateUserSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ["id", "email", "first_name", "last_name", "password"]
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "user_image",
+        ]
+
+    def get_user_image(self, obj):
+        try:
+            img = obj.user_image_url
+            return img
+        except ValueError:
+            return "No Image"
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "user_image",
+        ]
+
+    def get_user_image(self, obj):
+        try:
+            img = obj.user_image_url
+            return img
+        except ValueError:
+            return "No Image"
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -27,5 +53,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token["first_name"] = user.first_name
         token["last_name"] = user.last_name
+
+        try:
+            token["user_image"] = user.user_image.url
+        except ValueError:
+            token["user_image"] = "No Image"
 
         return token

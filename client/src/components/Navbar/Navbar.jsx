@@ -65,7 +65,7 @@ export default function Navbar(props) {
           </div>
         )}
 
-        <div className="hidden md:flex flex-row justify-center items-center gap-4 bg-white">
+        <div className="hidden md:flex flex-row justify-center items-center gap-4 bg-gray-100">
           <NavMenus />
         </div>
 

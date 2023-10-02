@@ -1,4 +1,5 @@
 import { ImEnter } from "react-icons/im";
+import { Link } from "react-router-dom";
 
 export default function RoomCard(props) {
   return (
@@ -35,7 +36,11 @@ export default function RoomCard(props) {
       </div>
       <div className="flex justify-between items-center text-xs p-2 text-purple-700 italic">
         Paolo, Yana, and Ezekiel are here.
-        <ImEnter className="text-2xl text-yellow-500 hover:text-yellow-600 cursor-pointer" />
+        <Link
+          to={`/room/${props.roomData.room_id}/${props.roomData.room_slug}`}
+        >
+          <ImEnter className="text-2xl text-yellow-500 hover:text-yellow-600 cursor-pointer" />
+        </Link>
       </div>
     </div>
   );

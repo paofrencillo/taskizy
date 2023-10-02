@@ -12,6 +12,7 @@ import Error403 from "./pages/Errors/Error403.jsx";
 import Error404 from "./pages/Errors/Error404.jsx";
 import Error500 from "./pages/Errors/Error500.jsx";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
+import Room from "./pages/Room.jsx";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/rooms" element={<Rooms />} />
-          <Route path="/room/:id/:room_slug" element={<Rooms />} />
+          <Route path="/room/:id/:room_slug" element={<Room />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/profile" element={<Profile />} />
         </Route>

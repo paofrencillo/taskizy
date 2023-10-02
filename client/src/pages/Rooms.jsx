@@ -33,6 +33,8 @@ export default function Rooms() {
     fetchRooms();
   }, []);
 
+  console.log(rooms);
+
   const handleOnChange = (e) => {
     setCharNum(e.target.value.length);
   };

@@ -15,3 +15,7 @@ export const API_AUTH_RESET_PASSWORD_URL = `${API_BASE_URL}auth/users/reset_pass
 export const API_AUTH_SET_NEW_PASSWORD_URL = `${API_BASE_URL}auth/users/set_password/`;
 
 export const API_ROOMS_URL = `${API_BASE_URL}rooms/`;
+
+export const API_ROOM_URL = `${API_BASE_URL}room/`;
+
+export const API_USERS_URL = `${API_BASE_URL}users/all/`;

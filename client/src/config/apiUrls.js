@@ -18,4 +18,4 @@ export const API_ROOMS_URL = `${API_BASE_URL}rooms/`;
 
 export const API_ROOM_URL = `${API_BASE_URL}room/`;
 
-export const API_USERS_URL = `${API_BASE_URL}users/all/`;
+export const API_USERS_URL = `${API_BASE_URL}get-users/`;

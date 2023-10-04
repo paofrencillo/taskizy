@@ -25,24 +25,28 @@ export default function Login() {
     setIsLoading(true);
 
     const getResponse = async () => {
-      const res = await AuthServices.login(formData);
-      try {
-        if (res.status === 200) {
-          TokenServices.saveToken(res.data);
-          return redirect("/dashboard");
-        } else if (res.status === 401) {
-          console.error("401 Unauthorized");
-          toast.error("Invalid username or password", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        }
-      } catch (error) {
-        window.location = "/400";
-      } finally {
-        setIsLoading(false);
-      }
+      await AuthServices.login(formData)
+        .then((res) => {
+          if (res.status === 200) {
+            TokenServices.saveToken(res.data);
+            return redirect("/dashboard");
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            toast.error("Invalid username or password", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          } else {
+            toast.error("Something is wrong. Try to refresh the page.", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     };
-
     getResponse();
   }
 

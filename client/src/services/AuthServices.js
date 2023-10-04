@@ -8,49 +8,37 @@ import {
 
 import TokenServices from "./tokenServices";
 
-const register = async (formData) => {
-  return axios
-    .post(API_AUTH_REGISTER_URL, formData, {
+const register = (formData) => {
+  try {
+    return axios.post(API_AUTH_REGISTER_URL, formData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    })
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error.response;
     });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-const activate = async (params) => {
-  return axios
-    .post(API_AUTH_ACTIVATE_URL, params, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    })
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error.response;
-    });
+const activate = (params) => {
+  console.log(params);
+  try {
+    return axios.post(API_AUTH_ACTIVATE_URL, params);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-const login = async (formData) => {
-  return axios
-    .post(API_AUTH_LOGIN_URL, formData, {
+const login = (formData) => {
+  try {
+    return axios.post(API_AUTH_LOGIN_URL, formData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    })
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error.response;
     });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const logout = async () => {

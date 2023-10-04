@@ -26,26 +26,30 @@ export default function Register() {
     setIsLoading(true);
 
     const getResponse = async () => {
-      try {
-        const res = await AuthServices.register(formData);
-        if (res.status === 201) {
-          toast.success(
-            "Account created successfully! Check your email's inbox for activation link.",
-            { position: toast.POSITION.TOP_RIGHT }
-          );
-        } else {
-          const formErrors = Object.values(res.data)[0];
+      await AuthServices.register(formData)
+        .then((res) => {
+          if (res.status === 201) {
+            toast.success(
+              "Account created successfully! Check your email's inbox for activation link.",
+              { position: toast.POSITION.TOP_RIGHT }
+            );
+          }
+        })
+        .catch((err) => {
+          const formErrors = Object.values(err.response.data)[0];
           formErrors.map((err) => {
             toast.error(err, { position: toast.POSITION.TOP_RIGHT });
           });
-        }
-      } catch (error) {
-        window.location = "/400";
-      } finally {
-        setIsLoading(false);
-      }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+      //  catch (error) {
+      //   window.location = "/400";
+      // } finally {
+      //   setIsLoading(false);
+      // }
     };
-
     getResponse();
   }
 
@@ -118,7 +122,7 @@ export default function Register() {
             </button>
           </form>
           <Link
-            to={"/login"}
+            to={"/"}
             className="text-sm text-gray-500 hover:text-purple-500 transition delay-100 duration-200 ease-in-out"
           >
             I already have an account

@@ -8,9 +8,9 @@ export default function ActivateSuccess() {
       </h1>
       <h3 className="text-center text-xl font-semibold text-purple-500 ">
         You may now close this window or{" "}
-        <Link to={"/login"} className="underline hover:text-purple-900">
+        <Link to={"/"} className="underline hover:text-purple-900">
           click here
-        </Link>{" "}
+        </Link>
         to redirect on login page.
       </h3>
     </div>

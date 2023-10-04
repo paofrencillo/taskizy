@@ -1,8 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import TokenServices from "../services/tokenServices";
+import Navbar from "../components/Navbar/Navbar";
 
-export default function PrivateRoute() {
+export default function PrivateRoute(props) {
   const accessToken = TokenServices.getToken().access;
 
   setInterval(() => {
@@ -17,7 +18,13 @@ export default function PrivateRoute() {
     const userID = decodedAccessToken.user_id;
     const userData = { userID, fullName, expDate };
 
-    return <Outlet context={userData} />;
+    return (
+      <>
+        <Navbar name={userData.fullName} />
+        <Outlet context={userData} />
+        {props.children}
+      </>
+    );
   } else {
     return <Navigate to={"/"} />;
   }

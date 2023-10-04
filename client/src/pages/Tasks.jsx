@@ -1,12 +1,10 @@
-import { useOutletContext } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+// import { useOutletContext } from "react-router-dom";
 
 export default function Tasks() {
-  const user = useOutletContext();
+  // const user = useOutletContext();
 
   return (
     <>
-      <Navbar name={user.fullName} />
       <div className="flex flex-col p-8">
         <div className="">
           <div className="inline-block w-full">

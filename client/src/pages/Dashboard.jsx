@@ -1,13 +1,7 @@
-import { useOutletContext } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+// import { useOutletContext } from "react-router-dom";
 
 export default function Dashboard() {
-  const user = useOutletContext();
+  // const user = useOutletContext();
 
-  return (
-    <div>
-      <Navbar name={user.fullName} />
-      Dashboard
-    </div>
-  );
+  return <div>Dashboard</div>;
 }

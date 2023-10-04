@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import AuthServices from "../services/AuthServices";
+import ActivateSuccess from "./Success/ActivateSuccess";
+import Error404 from "./Errors/Error404";
+import Error403 from "./Errors/Error403";
 
 export default function Activate() {
   const [status, setStatus] = useState(null);
@@ -9,44 +12,45 @@ export default function Activate() {
 
   useEffect(() => {
     const getStatus = async () => {
-      try {
-        const res = await AuthServices.activate(params);
-        setStatus(res.status);
-      } catch (error) {
-        window.location = "/400";
-      }
+      await AuthServices.activate(params)
+        .then((res) => {
+          setStatus(res.status);
+        })
+        .catch((err) => {
+          setStatus(err.response.status);
+        });
+      // Use response.status to get the HTTP status code
+      //  catch (error) {
+      //   window.location = "/400";
+      // }
     };
 
     getStatus();
   }, [params]);
 
-  console.log(status);
-
   switch (status) {
     case 400:
       window.location = "/400";
-      return null;
+      break;
     case 403:
-      window.location = "/403";
-      return null;
+      return <Error403 />;
     case 404:
       window.location = "/404";
-      return null;
+      break;
     case 500:
       window.location = "/500";
-      return null;
+      break;
     case 204:
-      window.location = "/activate-success";
-      return null;
+      return <ActivateSuccess />;
     default:
       return (
         <>
-          {status === null && (
-            <div className="relative w-screen h-screen">
-              <MutatingDotsLoader />
-            </div>
-          )}
+          <div className="relative w-screen h-screen">
+            <MutatingDotsLoader />
+          </div>
         </>
       );
   }
+
+
 }

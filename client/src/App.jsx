@@ -16,25 +16,28 @@ import Room from "./pages/Room.jsx";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/rooms" element={<Rooms />} />
-          <Route path="/room/:id/:room_slug" element={<Room />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/activate/:uid/:token/" element={<Activate />} />
-        <Route path="/activate-success" element={<ActivateSuccess />} />
-        <Route path="/400" element={<Error400 />} />
-        <Route path="/403" element={<Error403 />} />
-        <Route path="/404" element={<Error404 />} />
-        <Route path="/500" element={<Error500 />} />
-        <Route path="*" element={<Error404 />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/rooms" element={<Rooms />} />
+            <Route path="/room/:room_id/:room_slug" element={<Room />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/activate/:uid/:token/" element={<Activate />} />
+          <Route path="/activate-success" element={<ActivateSuccess />} />
+          <Route path="/400" element={<Error400 />} />
+          <Route path="/403" element={<Error403 />} />
+          <Route path="/404" element={<Error404 />} />
+          <Route path="/500" element={<Error500 />} />
+          <Route path="*" element={<Error404 />} />
+        </Routes>
+      </Router>
+    </>
   );
 }

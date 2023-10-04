@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+// import { useOutletContext } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { IoMdCloseCircle } from "react-icons/io";
 import RoomServices from "../services/RoomServices";
-import Navbar from "../components/Navbar/Navbar";
 import RoomCard from "../components/Rooms/RoomCard";
 import AddRoomBtn from "../components/Rooms/AddRoomBtn";
 
 export default function Rooms() {
-  const user = useOutletContext();
+  // const user = useOutletContext();
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [charNum, setCharNum] = useState(0);
@@ -63,7 +62,6 @@ export default function Rooms() {
   return (
     <>
       <ToastContainer />
-      <Navbar name={user.fullName} />
       <div className="flex flex-wrap justify-center gap-8 p-8">
         {rooms.map((room) => {
           return <RoomCard key={room.room_id} roomData={room} />;
@@ -73,7 +71,7 @@ export default function Rooms() {
       {rooms.length === 0 && (
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-wrap justify-center items-center">
           <img
-            src="undraw_searching_re_3ra9.svg"
+            src="/undraw_searching_re_3ra9.svg"
             alt="searching-img"
             className="w-96"
           />

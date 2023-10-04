@@ -1,6 +1,6 @@
 import axios from "axios";
 import TokenServices from "./tokenServices";
-import { API_ROOMS_URL, API_ROOM_URL } from "../config/apiUrls";
+import { API_ROOMS_URL, API_USERS_URL, API_ROOM_URL } from "../config/apiUrls";
 
 const createRoom = (roomFormData) => {
   try {
@@ -32,7 +32,7 @@ const getRooms = () => {
 const getRoomData = (params) => {
   try {
     const accessToken = TokenServices.getToken().access;
-    return axios.get(`${API_ROOM_URL}${params.id}/${params.room_slug}/`, {
+    return axios.get(`${API_ROOM_URL}${params.room_id}/${params.room_slug}/`, {
       headers: {
         Authorization: `JWT ${accessToken}`,
       },
@@ -42,10 +42,28 @@ const getRoomData = (params) => {
   }
 };
 
+const addRoomMembers = (formData, params) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.post(
+      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/add_members/`,
+      formData,
+      {
+        headers: {
+          Authorization: `JWT ${accessToken}`,
+        },
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const RoomServices = {
   createRoom,
   getRooms,
   getRoomData,
+  addRoomMembers,
 };
 
 export default RoomServices;

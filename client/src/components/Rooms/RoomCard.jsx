@@ -1,9 +1,49 @@
+import { useEffect, useState } from "react";
 import { ImEnter } from "react-icons/im";
 import { Link } from "react-router-dom";
 
 export default function RoomCard(props) {
+  const [firstMember, setFirstMember] = useState("");
+  const [secondMember, setSecondMember] = useState("");
+  const [countOtherMember, setCountOtherMember] = useState(0);
+  const [roomMembers, setRoomMembers] = useState("");
+
+  useEffect(() => {
+    const getMembers = () => {
+      const membersList = [];
+      props.roomData.room_members.map((member) => {
+        if (member.id !== props.roomData.room_admin.id) {
+          membersList.push(member.first_name);
+        }
+      });
+
+      switch (membersList.length) {
+        case 0:
+          setRoomMembers("You are the only one in this room");
+          break;
+        case 1:
+          setFirstMember(membersList[0]);
+          setRoomMembers(`${firstMember} was here`);
+          break;
+        case 2:
+          setFirstMember(membersList[0]);
+          setSecondMember(membersList[1]);
+          setRoomMembers(`${firstMember} and ${secondMember} were here`);
+          break;
+        default:
+          setFirstMember(membersList[0]);
+          setSecondMember(membersList[1]);
+          setCountOtherMember(membersList.length - 2);
+          setRoomMembers(
+            `${firstMember}, ${secondMember} and ${countOtherMember} others were here`
+          );
+      }
+    };
+    getMembers();
+  }, [props.roomData, firstMember, secondMember, countOtherMember]);
+
   return (
-    <div className="w-[325px] shadow-sm border-2 hover:shadow-purple-100 hover:border-purple-200 hover:-translate-y-1 rounded-md transition delay-75 duration-150 ease-in-out">
+    <div className="w-[325px] shadow-md hover:shadow-purple-100 hover:-translate-y-1 rounded-md transition delay-75 duration-150 ease-in-out">
       {/* Header */}
       <div className="flex justify-between items-center gap-4 rounded-t-md bg-purple-700 text-sm text-gray-100 font-semibold p-2">
         {props.roomData.room_name}
@@ -19,10 +59,10 @@ export default function RoomCard(props) {
         </div>
       </div>
       {/* Body */}
-      <div className="p-2 my-4">
+      <div className="px-4 py-2 my-4">
         <div className="flex first-letter:gap-4 justify-between items-center">
           <div className="w-full relative h-4 bg-gray-300 rounded-lg">
-            <div className="w-[75%] h-full bg-purple-500 text-white rounded-lg">
+            <div className="w-[75%] h-full bg-purple-300 text-white rounded-lg">
               <span className="invisible">70% Completed</span>
             </div>
             <p className="top-0 absolute text-xs h-full whitespace-nowrap w-full text-center text-gray-100">
@@ -30,16 +70,23 @@ export default function RoomCard(props) {
             </p>
           </div>
         </div>
-        <div className="text-sm text-center mt-4 text-gray-700">
-          15 Pending | 2 In Progress | 12 Completed
+        <div className="flex gap-4 justify-center text-xs text-center mt-4 text-gray-700">
+          <div className="px-1 py-2 shadow-md rounded-md">
+            Tasks Due Today
+            <div className="text-purple-500">2</div>
+          </div>
+          <div className="px-1 py-2 shadow-md rounded-md">
+            Number of Tasks
+            <div className="text-purple-500">10</div>
+          </div>
         </div>
       </div>
-      <div className="flex justify-between items-center text-xs p-2 text-purple-700 italic">
-        Paolo, Yana, and Ezekiel are here.
+      <div className="flex justify-between items-center text-xs px-4 py-2 text-purple-700 italic">
+        {roomMembers}
         <Link
           to={`/room/${props.roomData.room_id}/${props.roomData.room_slug}`}
         >
-          <ImEnter className="text-2xl text-yellow-500 hover:text-yellow-600 cursor-pointer" />
+          <ImEnter className="text-2xl text-yellow-700 hover:text-yellow-800 cursor-pointer" />
         </Link>
       </div>
     </div>

@@ -5,9 +5,9 @@ export default function RoomHeader(props) {
         <h1 className="text-2xl font-bold text-gray-800">
           Welcome to {props.roomName}&apos;s Room
         </h1>
-        <h3 className="text-base font-medium text-gray-300">
+        <span className="text-base font-medium text-gray-500">
           You have 3 task today
-        </h3>
+        </span>
       </div>
       <div>
         <img

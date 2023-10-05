@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
-// import { useOutletContext } from "react-router-dom";
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import { IoMdCloseCircle } from "react-icons/io";
 import RoomServices from "../services/RoomServices";
 import RoomCard from "../components/Rooms/RoomCard";
 import AddRoomBtn from "../components/Rooms/AddRoomBtn";
 
 export default function Rooms() {
-  // const user = useOutletContext();
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [charNum, setCharNum] = useState(0);
-
-  showModal
-    ? (document.body.style.overflow = "hidden")
-    : (document.body.style.overflow = "auto");
 
   useEffect(() => {
     // Fetch and set rooms when the component mounts
@@ -32,7 +32,7 @@ export default function Rooms() {
     fetchRooms();
   }, []);
 
-  console.log(rooms);
+  const handleShowModal = () => setShowModal(!showModal);
 
   const handleOnChange = (e) => {
     setCharNum(e.target.value.length);
@@ -91,37 +91,44 @@ export default function Rooms() {
       </div>
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed z-50 top-0 left-0 bg-gray-500 bg-opacity-50 w-screen h-screen ">
-          <div className="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[325px] bg-gray-100 shadow-md rounded-lg p-8">
-            <IoMdCloseCircle
-              className="absolute top-2 right-2 text-purple-700 text-2xl cursor-pointer"
-              onClick={() => {
-                setShowModal(!showModal);
-              }}
+      <Dialog
+        open={showModal}
+        handler={handleShowModal}
+        animate={{
+          mount: { scale: 1, y: 0 },
+          unmount: { scale: 0.9, y: -100 },
+        }}
+      >
+        <DialogHeader>Create New Room</DialogHeader>
+        <form onSubmit={handleFormSubmit}>
+          <DialogBody divider>
+            <input
+              type="text"
+              name="room_name"
+              className="py-3 text-gray-700 px-4 block w-full border-2 border-gray-200 rounded-lg focus:outline-0 focus:border-purple-200"
+              placeholder="Room Name"
+              onChange={handleOnChange}
+              maxLength={25}
             />
-            <form onSubmit={handleFormSubmit}>
-              <input
-                type="text"
-                name="room_name"
-                className="py-3 text-gray-700 px-4 block w-full border-2 border-gray-200 rounded-lg focus:outline-0 focus:border-purple-200"
-                placeholder="Room Name"
-                onChange={handleOnChange}
-                maxLength={25}
-              />
-              <div className="w-full text-gray-400 text-end font-extralight text-xs">
-                {charNum} / 25
-              </div>
-              <button
-                type="submit"
-                className="text-center w-full rounded-lg shadow-sm shadow-purple-500 bg-purple-500 p-2 mt-6 text-gray-100 font-semibold hover:bg-purple-700 focus:bg-purple-700 focus:-translate-y-0.5"
-              >
-                Create Room
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="w-full text-gray-400 text-end font-extralight text-xs">
+              {charNum} / 25
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="text"
+              color="red"
+              onClick={handleShowModal}
+              className="mr-1"
+            >
+              <span>Cancel</span>
+            </Button>
+            <Button type="submit" variant="gradient" color="purple">
+              <span>Create</span>
+            </Button>
+          </DialogFooter>
+        </form>
+      </Dialog>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import TokenServices from "../services/tokenServices";
-import Navbar from "../components/Navbar/Navbar";
+import { Nav } from "../components/Navbar/Nav";
 
 export default function PrivateRoute(props) {
   const accessToken = TokenServices.getToken().access;
@@ -20,7 +20,7 @@ export default function PrivateRoute(props) {
 
     return (
       <>
-        <Navbar name={userData.fullName} />
+        <Nav userFullName={userData.fullName} />
         <Outlet context={userData} />
         {props.children}
       </>

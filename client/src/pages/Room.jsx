@@ -28,7 +28,10 @@ export default function Room() {
   return (
     <>
       <div className="bg-gray-800">
-        <RoomHeader roomName={roomData.room_name} />
+        <RoomHeader
+          roomName={roomData.room_name}
+          task_completed_perc={roomData.task_completed_perc}
+        />
       </div>
 
       <div className="px-10 py-4">
@@ -39,8 +42,8 @@ export default function Room() {
         {/*  */}
         {/* Page Body */}
         {/*  */}
-        <div className="flex justify-between gap-4">
-          <TaskContainer />
+        <div className="sticky flex justify-between gap-4">
+          <TaskContainer tasks={roomData?.tasks} />
           <MembersCard
             roomMembers={roomData?.room_members}
             roomAdmin={roomData?.room_admin}

@@ -93,7 +93,9 @@ export default function InviteMembers() {
           )}
           onChange={handleSelectChange}
           value={selectedValues}
+          placeholder={"Select people ..."}
           isMulti
+          required
         />
         <button
           type="submit"

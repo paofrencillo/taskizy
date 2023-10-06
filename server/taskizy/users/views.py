@@ -3,6 +3,28 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer
+from rooms.models import RoomMember
+
+
+User = get_user_model()
+
+
+class UsersListView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        try:
+            member_queryset = RoomMember.objects.filter(room_id=pk)
+            user_queryset = User.objects.exclude(is_superuser=True).exclude(
+                pk__in=[member.room_member_id for member in member_queryset]
+            )
+        except User.DoesNotExist:
+            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user_queryset, many=True)
+        return Response(serializer.data)
 
 
 class LogoutView(APIView):

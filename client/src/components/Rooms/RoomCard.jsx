@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ImEnter } from "react-icons/im";
 import { Link } from "react-router-dom";
-
+import { Progress } from "@material-tailwind/react";
 export default function RoomCard(props) {
   const [firstMember, setFirstMember] = useState("");
   const [secondMember, setSecondMember] = useState("");
@@ -61,14 +61,7 @@ export default function RoomCard(props) {
       {/* Body */}
       <div className="px-4 py-2 my-4">
         <div className="flex first-letter:gap-4 justify-between items-center">
-          <div className="w-full relative h-4 bg-gray-300 rounded-lg">
-            <div className="w-[75%] h-full bg-purple-300 text-white rounded-lg">
-              <span className="invisible">70% Completed</span>
-            </div>
-            <p className="top-0 absolute text-xs h-full whitespace-nowrap w-full text-center text-gray-100">
-              75% Task Completed
-            </p>
-          </div>
+          <Progress value={70} color="purple" label="Completed" />
         </div>
         <div className="flex gap-4 justify-center text-xs text-center mt-4 text-gray-700">
           <div className="px-1 py-2 shadow-md rounded-md">

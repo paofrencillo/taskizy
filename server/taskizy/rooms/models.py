@@ -1,7 +1,10 @@
 from django.db import models
-from users.models import User
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class Room(models.Model):
@@ -28,3 +31,14 @@ class Room(models.Model):
 
     def __str__(self):
         return self.room_name
+
+
+class RoomMember(models.Model):
+    room = models.ForeignKey(Room, verbose_name=_("room_id"), on_delete=models.CASCADE)
+    room_member = models.ForeignKey(
+        User, verbose_name=_("room_member"), on_delete=models.CASCADE
+    )
+    # is_room_admin = models.BooleanField(_("is_room_admin"), default=False)
+
+    def __str__(self):
+        return self.room_member.get_full_name

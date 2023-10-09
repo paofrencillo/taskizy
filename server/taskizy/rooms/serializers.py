@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Room, RoomMember
+from tasks.models import Task
 from users.serializers import UserSerializer
+from tasks.serializers import TasksListSerializer
 import json
 
 
@@ -11,6 +13,8 @@ User = get_user_model()
 class RoomsListSerializer(serializers.ModelSerializer):
     room_admin = UserSerializer(many=False, read_only=True)
     room_members = serializers.SerializerMethodField()
+    task_completed_perc = serializers.SerializerMethodField()
+    tasks_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
@@ -21,6 +25,8 @@ class RoomsListSerializer(serializers.ModelSerializer):
             "room_admin",
             "room_members",
             "room_slug",
+            "task_completed_perc",
+            "tasks_count",
         ]
 
     def get_room_members(self, obj):
@@ -32,14 +38,44 @@ class RoomsListSerializer(serializers.ModelSerializer):
 
         return member_serialized
 
+    def get_task_completed_perc(self, obj):
+        try:
+            tasks_count = Task.objects.filter(room=obj).count()
+            completed_tasks_count = (
+                Task.objects.filter(room=obj).filter(is_completed=True).count()
+            )
+
+            percentage = round((completed_tasks_count / tasks_count) * 100)
+
+            return percentage
+        except ZeroDivisionError:
+            return 0
+
+    def get_tasks_count(self, obj):
+        try:
+            tasks_count = Task.objects.filter(room=obj).count()
+            return tasks_count
+        except Room.DoesNotExist:
+            raise serializers.ValidationError(
+                "Room with the specified ID does not exist"
+            )
+
 
 class RoomSerializer(serializers.ModelSerializer):
     room_admin = UserSerializer(read_only=True)
     room_members = serializers.SerializerMethodField()
+    tasks = serializers.SerializerMethodField()
+    task_completed_perc = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
-        fields = ["room_name", "room_admin", "room_members"]
+        fields = [
+            "room_name",
+            "room_admin",
+            "room_members",
+            "tasks",
+            "task_completed_perc",
+        ]
 
     def create(self, validated_data):
         try:
@@ -72,8 +108,35 @@ class RoomSerializer(serializers.ModelSerializer):
 
         return member_serialized
 
+    def get_tasks(self, obj):
+        tasks = Task.objects.filter(room=obj)
+        tasks_serialized = [TasksListSerializer(task).data for task in tasks]
+
+        return tasks_serialized
+
+    def get_task_completed_perc(self, obj):
+        try:
+            tasks_count = Task.objects.filter(room=obj).count()
+            completed_tasks_count = (
+                Task.objects.filter(room=obj).filter(is_completed=True).count()
+            )
+
+            percentage = round((completed_tasks_count / tasks_count) * 100)
+
+            return percentage
+        except ZeroDivisionError:
+            return 0
+
     def update(self, validated_data):
         pass
+
+
+class RoomMembersListSerializer(serializers.ModelSerializer):
+    room_member = UserSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = RoomMember
+        fields = ["room_member"]
 
 
 class RoomMembersCreateSerializer(serializers.Serializer):

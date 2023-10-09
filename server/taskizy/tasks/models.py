@@ -13,8 +13,9 @@ class Task(models.Model):
         auto_created=True,
         serialize=False,
     )
-    desciption = models.TextField(
+    description = models.CharField(
         _("description"),
+        max_length=100,
         null=False,
         blank=False,
     )
@@ -30,7 +31,7 @@ class Task(models.Model):
         null=False,
         blank=False,
     )
-    creator_id = models.ForeignKey(
+    creator = models.ForeignKey(
         User,
         verbose_name=_("creator_id"),
         related_name="creator_id",
@@ -38,7 +39,7 @@ class Task(models.Model):
         null=True,
         blank=False,
     )
-    tasker_id = models.ForeignKey(
+    tasker = models.ForeignKey(
         User,
         verbose_name=_("tasker_id"),
         related_name="tasker_id",
@@ -46,10 +47,13 @@ class Task(models.Model):
         null=True,
         blank=False,
     )
-    room_id = models.ForeignKey(
+    room = models.ForeignKey(
         Room,
         verbose_name=_("task_room_id"),
         on_delete=models.CASCADE,
         null=False,
         blank=False,
     )
+
+    class Meta:
+        ordering = ("is_completed",)

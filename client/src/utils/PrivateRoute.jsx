@@ -13,10 +13,12 @@ export default function PrivateRoute(props) {
   if (accessToken) {
     const decodedAccessToken = jwt_decode(accessToken);
     const expDate = new Date(decodedAccessToken.exp * 1000); // JavaScript uses milliseconds, so multiply by 1000
+    const first_name = decodedAccessToken.first_name;
+    const last_name = decodedAccessToken.last_name;
     const fullName =
       decodedAccessToken.first_name + " " + decodedAccessToken.last_name;
     const userID = decodedAccessToken.user_id;
-    const userData = { userID, fullName, expDate };
+    const userData = { userID, first_name, last_name, fullName, expDate };
 
     return (
       <>

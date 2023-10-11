@@ -15,7 +15,7 @@ import { GrFormClose } from "react-icons/gr";
 import { HiLogout } from "react-icons/hi";
 import InviteMembers from "./InviteMembers";
 
-export function MembersCard({ roomMembers, roomAdmin }) {
+export function MembersCard({ roomMembers, roomAdmin, user }) {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const handleOpenInviteDialog = () => setOpenInviteDialog(!openInviteDialog);
 
@@ -42,7 +42,7 @@ export function MembersCard({ roomMembers, roomAdmin }) {
       {/*  */}
       {/* Members Drawer Contents */}
       {/*  */}
-      <Card className="w-96 shadow-lg">
+      <Card className="w-[450px] shadow-lg h-fit">
         <CardBody>
           <div className="flex justify-between items-center mb-8">
             <Typography variant="small" color="blue" className="font-normal">
@@ -75,7 +75,8 @@ export function MembersCard({ roomMembers, roomAdmin }) {
                       color="gray"
                       className=" hover:text-gray-900 text-ellipsis"
                     >
-                      {member.first_name} {member.last_name}
+                      {member.first_name} {member.last_name}{" "}
+                      {member.first_name === user.first_name ? "(Me)" : null}
                     </Typography>
                   </div>
                   <div className="flex justify-end items-center gap-2">

@@ -1,6 +1,10 @@
 import { Typography, Progress } from "@material-tailwind/react";
 
-export default function RoomHeader({ roomName, task_completed_perc }) {
+export default function RoomHeader({
+  roomName,
+  roomAdmin,
+  task_completed_perc,
+}) {
   return (
     <div className="flex justify-around items-center gap-4 p-8">
       <div>
@@ -8,7 +12,10 @@ export default function RoomHeader({ roomName, task_completed_perc }) {
           Welcome to {roomName}&apos;s Room
         </Typography>
         <Typography variant="small" className="text-gray-400">
-          You have 3 task today
+          Hello,{" "}
+          {roomAdmin
+            ? roomAdmin.first_name + " " + roomAdmin.last_name
+            : "User User"}
         </Typography>
         <div className="mt-4 flex flex-grow items-center justify-between bg-blue-gray-50 gap-2 shadow-lg rounded-lg py-2 px-4">
           <Typography variant="small" color="purple">

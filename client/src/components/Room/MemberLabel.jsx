@@ -1,4 +1,4 @@
-export default function MemberLabel(props) {
+export default function MemberLabel({ memberFullName }) {
   return (
     <div className="flex justify-start items-center gap-2 group">
       <div className="w-8 h-8 rounded-full">
@@ -8,7 +8,7 @@ export default function MemberLabel(props) {
           className="w-full h-full rounded-full object-cover"
         />
       </div>
-      <div className="text-sm">{props.userFullName}</div>
+      <div className="text-sm">{memberFullName}</div>
     </div>
   );
 }

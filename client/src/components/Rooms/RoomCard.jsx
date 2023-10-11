@@ -60,36 +60,25 @@ export default function RoomCard(props) {
         </div>
       </div>
       {/* Body */}
-      <div className="px-4 py-2 my-4">
+      <div className="flex flex-col gap-2 px-4 py-2 my-4">
         <Typography
           variant="small"
           color="gray"
           className="text-center w-full  mb-2"
         >
-          {props.roomData.task_completed_perc == 0
-            ? props.roomData.task_completed_perc
-            : null}
-          % Tasks Completed
+          {props.roomData.task_completed_perc}% Tasks Completed
         </Typography>
         <Progress
           size="lg"
-          value={
-            props.roomData.task_completed_perc == 0
-              ? props.roomData.task_completed_perc
-              : null
-          }
+          value={props.roomData.task_completed_perc}
           color="purple"
         />
 
-        <div className="flex gap-4 justify-center text-xs text-center mt-4 text-gray-700">
-          <div className="px-1 py-2 shadow-md rounded-md">
-            Tasks Due Today
-            <div className="text-purple-500">2</div>
-          </div>
-          <div className="px-1 py-2 shadow-md rounded-md">
-            Number of Tasks
-            <div className="text-purple-500">10</div>
-          </div>
+        <div className="px-6 py-2 shadow-md rounded-md w-fit text-center">
+          <Typography variant="small">Total Task</Typography>
+          <Typography variant="h6" color="purple">
+            {props.roomData.tasks_count}
+          </Typography>
         </div>
       </div>
       <div className="flex justify-between items-center text-xs px-4 py-2 text-purple-700 italic">

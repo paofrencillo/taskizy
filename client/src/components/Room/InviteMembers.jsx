@@ -10,7 +10,7 @@ export default function InviteMembers() {
   const [options, setOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [selectedValues, setSelectedValues] = useState([]); // State to store selected values
+  const [selectedValues, setSelectedValues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const pageSize = 6;
   const params = useParams();

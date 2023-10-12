@@ -13,32 +13,56 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
 import TaskServices from "../../../services/TaskServices";
+import MutatingDotsLoader from "../../Loader/MutatingDotsLoader";
 
 export default function TaskContainer({ tasks, user, roomAdmin }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isLoading, setIsloading] = useState(true);
-  const [taskID, setTaskID] = useState("");
+  const [deleteTaskID, setDeleteTaskID] = useState(0);
+  const [roomID, setRoomID] = useState(0);
   const handleOpenDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
   const params = useParams();
 
   useEffect(() => {
     tasks ? setIsloading(false) : null;
-  }, [tasks]);
+    params ? setRoomID(params.room_id) : setRoomID(0);
+  }, [tasks, params]);
 
-  const handleGetTaskID = (e) => {
-    setTaskID(e.currentTarget.getAttribute("data-task-id"));
+  const handleTrashGetTaskID = (e) => {
+    setDeleteTaskID(e.currentTarget.getAttribute("data-task-id"));
     setOpenDeleteModal(true);
   };
 
-  const handleSendTaskTrash = () => {
-    const roomID = params.room_id;
+  const handleDoneGetTaskID = (e) => {
+    const doneTaskID = e.currentTarget.getAttribute("data-task-id");
+    handleSendTaskDone(doneTaskID);
+  };
 
+  const handleSendTaskDone = async (doneTaskID) => {
+    setIsloading(true);
+    try {
+      const response = await TaskServices.markAsDoneTask(roomID, doneTaskID);
+      if (response.status === 200) {
+        toast.success("Task was marked done.", toast.POSITION.BOTTOM_RIGHT);
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  const handleSendTaskTrash = () => {
     const sendData = async () => {
       try {
-        const response = await TaskServices.deleteTask(taskID, roomID);
+        const response = await TaskServices.deleteTask(deleteTaskID, roomID);
 
         if (response.status === 204) {
           setOpenDeleteModal(false);
@@ -46,16 +70,24 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
         } else console.error(response.status);
       } catch (err) {
         setOpenDeleteModal(false);
-        toast.error("Something is wrong. Try Again.", toast.POSITION.TOP_RIGHT);
+        toast.error(
+          "Something is wrong. Try Again.",
+          toast.POSITION.BOTTOM_RIGHT
+        );
         console.error(err);
       }
     };
-
     sendData();
   };
 
   return (
     <>
+      {isLoading && (
+        <div className="w-screen h-screen">
+          <MutatingDotsLoader />
+        </div>
+      )}
+
       <ToastContainer />
       {/*  */}
       {/* Delete Task Modal */}
@@ -96,7 +128,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
               // ---------
               // Task Card
               // ---------
-              <Card key={task.task_id} className="w-96 h-64">
+              <Card key={task.task_id} className="w-72 lg:w-96 h-64">
                 <CardBody className="flex flex-col gap-2 p-4 h-full">
                   <div className="flex justify-between items-center gap-2 w-full">
                     <div className="flex justify-between items-center gap-2">
@@ -121,14 +153,20 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                       src="/logo_temp.png"
                       alt="tasker-img"
                       title={
-                        task.tasker.first_name === user.first_name
-                          ? "Me"
-                          : `${task.tasker.first_name} ${task.tasker.last_name}`
+                        task.tasker != null
+                          ? task.tasker.first_name === user.first_name
+                            ? "Me"
+                            : `${task.tasker.first_name} ${task.tasker.last_name}`
+                          : "AnonymousUser"
                       }
                     />
                   </div>
 
-                  <Typography variant="h6" color="gray">
+                  <Typography
+                    variant="h6"
+                    color="gray"
+                    className="text-sm lg:text-base"
+                  >
                     {task.description}
                   </Typography>
                 </CardBody>
@@ -142,7 +180,9 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                     />
                     <Typography color="blue" className="text-xs">
                       Assigned by{" "}
-                      {task.creator.first_name === user.first_name
+                      {task.creator === null
+                        ? "AnonymousUser"
+                        : task.creator.first_name === user.first_name
                         ? "Me"
                         : task.creator.first_name}
                     </Typography>
@@ -153,10 +193,11 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                         roomAdmin.id === user.userID) && (
                         <Button
                           data-task-id={task.task_id}
+                          ripple={false}
                           variant="gradient"
                           color="red"
                           className="flex-grow flex justify-center items-center gap-2 hover:shadow-md w-fit py-1.5 px-8"
-                          onClick={handleGetTaskID}
+                          onClick={handleTrashGetTaskID}
                         >
                           <FaRegTrashAlt />
                           <Typography className="text-xs">Trash</Typography>
@@ -168,13 +209,15 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                         roomAdmin.id === user.userID) && (
                         <Button
                           data-task-id={task.task_id}
+                          ripple={false}
                           color="green"
                           variant="gradient"
                           className="flex justify-center items-center gap-2 hover:shadow-md w-full py-1.5 px-4"
+                          onClick={handleDoneGetTaskID}
                         >
                           <IoCheckmarkDoneSharp />
                           <Typography className="text-xs">
-                            Mark as Complete
+                            Mark as Done
                           </Typography>
                         </Button>
                       )}

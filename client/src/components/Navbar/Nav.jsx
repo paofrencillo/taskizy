@@ -117,7 +117,10 @@ export function Nav({ userFullName }) {
   }, []);
 
   return (
-    <Navbar className="mx-auto px-6 py-3" fullWidth>
+    <Navbar
+      className="z-50 fixed mx-auto bg-white bg-opacity-100 h-16 px-6 py-3"
+      fullWidth
+    >
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.contrib.auth import get_user_model
 from .models import Task
-from .serializers import TasksListSerializer, TaskSerializer
+from .serializers import TasksListSerializer, TaskCreateSerializer
 
 
 User = get_user_model()
@@ -27,11 +27,15 @@ class TasksListCreateView(ListCreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def create(self, request):
+    def create(self, request, room_id):
         print(request.data)
-        serializer = TaskSerializer(
+        print(room_id)
+        serializer = TaskCreateSerializer(
             data=request.data,
-            context={"request": request},
+            context={
+                "request": request,
+                "room_id": room_id,
+            },
         )
 
         if serializer.is_valid():
@@ -45,11 +49,50 @@ class TasksListCreateView(ListCreateAPIView):
 
 
 class TaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TasksListSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        task_id = int(self.kwargs.get("task_id"))
+        room_id = int(self.kwargs.get("room_id"))
+
+        try:
+            queryset = Task.objects.filter(task_id=task_id, room=room_id)
+            instance = queryset.get()
+
+            return instance
+
+        except Task.DoesNotExist:
+            raise Exception("Task does not exist or room is invalid.")
+
     def retrieve(self, request, room_id, room_slug):
         pass
 
-    def update(self, request, room_id, room_slug):
-        pass
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
 
-    def destroy(self, request, room_id, room_slug):
-        pass
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                print(serializer.errors)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Task.DoesNotExist:
+            return Response(
+                "Task does not exist or room is invalid.",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            instance.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except Task.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

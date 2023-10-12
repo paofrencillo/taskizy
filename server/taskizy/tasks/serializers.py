@@ -23,31 +23,32 @@ class TasksListSerializer(serializers.ModelSerializer):
         ]
 
 
-class TaskSerializer(serializers.Serializer):
+class TaskCreateSerializer(serializers.Serializer):
     description = serializers.CharField()
-    tasker = serializers.IntegerField()
-    room = serializers.IntegerField()
+    tasker = serializers.CharField()
     is_urgent = serializers.CharField()
 
     def create(self, validated_data):
+        print(validated_data)
         try:
-            user_id = int(self.context["request"].user.id)
-            room_id = int(validated_data["room"])
             tasker_id = int(validated_data["tasker"])
+            creator_id = int(self.context["request"].user.id)
+            room_id = int(self.context["room_id"])
 
             description = validated_data["description"]
             is_urgent = validated_data["is_urgent"]
-            creator = User.objects.get(pk=user_id)
+            creator = User.objects.get(pk=creator_id)
             tasker = User.objects.get(pk=tasker_id)
             room = Room.objects.get(pk=room_id)
 
         except User.DoesNotExist:
-            raise serializers.ValidationError(
-                "User with the specified ID does not exist"
-            )
+            raise serializers.ValidationError("User does not exist")
+
+        except Room.DoesNotExist:
+            raise serializers.ValidationError("Room does not exist")
 
         task = Task.objects.create(
-            description=validated_data["description"],
+            description=description,
             is_urgent=True if is_urgent == "on" else False,
             creator=creator,
             tasker=tasker,

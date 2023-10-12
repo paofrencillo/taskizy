@@ -14,6 +14,7 @@ import {
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { MdAddTask } from "react-icons/md";
 import MemberLabel from "../MemberLabel";
 import TaskServices from "../../../services/TaskServices";
@@ -92,7 +93,7 @@ export default function AddTask({ roomMembers, user }) {
         if (response.status === 201) {
           setOpen(!open);
           toast.success("Task created successfully.", {
-            position: toast.POSITION.TOP_RIGHT,
+            position: toast.POSITION.BOTTOM_RIGHT,
           });
           setTimeout(() => {
             location.reload();
@@ -102,7 +103,7 @@ export default function AddTask({ roomMembers, user }) {
         console.error(err);
         setOpen(!open);
         toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
       }
     };
@@ -119,7 +120,9 @@ export default function AddTask({ roomMembers, user }) {
         onClick={handleOpen}
       >
         <MdAddTask className="text-lg" />
-        <Typography className="text-xs">Add New Task</Typography>
+        <Typography variant="small" className="hidden sm:inline-block">
+          Add New Task
+        </Typography>
       </button>
       <Dialog size="sm" open={open} handler={handleOpen}>
         <form className="my-2 w-full" onSubmit={handleFormSubmit}>

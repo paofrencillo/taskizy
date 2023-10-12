@@ -6,7 +6,7 @@ export default function RoomHeader({
   task_completed_perc,
 }) {
   return (
-    <div className="flex justify-around items-center gap-4 p-8">
+    <div className="flex-col-reverse md:flex-row flex justify-around items-center gap-4 p-4 md:p-8">
       <div>
         <Typography variant="h3" color="white">
           Welcome to {roomName}&apos;s Room
@@ -21,7 +21,7 @@ export default function RoomHeader({
           <Typography variant="small" color="purple">
             {task_completed_perc}% Tasks Completed
           </Typography>
-          <div className="w-72">
+          <div className="w-44 md:w-72">
             <Progress
               value={task_completed_perc}
               size="lg"

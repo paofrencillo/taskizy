@@ -5,7 +5,7 @@ import { API_TASK_URL } from "../config/apiUrls";
 const createTask = (taskFormData, roomID) => {
   try {
     const accessToken = TokenServices.getToken().access;
-    return axios.post(`${API_TASK_URL}${roomID}/create/`, taskFormData, {
+    return axios.post(`${API_TASK_URL}room${roomID}/create/`, taskFormData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `JWT ${accessToken}`,
@@ -16,10 +16,28 @@ const createTask = (taskFormData, roomID) => {
   }
 };
 
+const markAsDoneTask = (roomID, taskID) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.patch(
+      `${API_TASK_URL}room${roomID}/task${taskID}/mark-done/`,
+      { is_completed: true },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${accessToken}`,
+        },
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const deleteTask = (taskID, roomID) => {
   try {
     const accessToken = TokenServices.getToken().access;
-    return axios.delete(`${API_TASK_URL}${roomID}/${taskID}/delete/`, {
+    return axios.delete(`${API_TASK_URL}room${roomID}/task${taskID}/delete/`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${accessToken}`,
@@ -32,6 +50,7 @@ const deleteTask = (taskID, roomID) => {
 
 const TaskServices = {
   createTask,
+  markAsDoneTask,
   deleteTask,
 };
 

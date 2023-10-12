@@ -5,7 +5,7 @@ from .views import UsersListView, LogoutView
 
 urlpatterns = [
     path(
-        "get-users/<int:pk>/",
+        "get-users/<int:room_id>/",
         UsersListView.as_view(),
         name="get-users",
     ),

@@ -14,9 +14,9 @@ User = get_user_model()
 class UsersListView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, pk):
+    def get(self, request, room_id):
         try:
-            member_queryset = RoomMember.objects.filter(room_id=pk)
+            member_queryset = RoomMember.objects.filter(room_id=room_id)
             user_queryset = User.objects.exclude(is_superuser=True).exclude(
                 pk__in=[member.room_member_id for member in member_queryset]
             )

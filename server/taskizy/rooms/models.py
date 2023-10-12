@@ -38,7 +38,6 @@ class RoomMember(models.Model):
     room_member = models.ForeignKey(
         User, verbose_name=_("room_member_id"), on_delete=models.CASCADE
     )
-    # is_room_admin = models.BooleanField(_("is_room_admin"), default=False)
 
     def __str__(self):
         return self.room_member.get_full_name

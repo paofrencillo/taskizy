@@ -32,11 +32,14 @@ const getRooms = () => {
 const getRoomData = (params) => {
   try {
     const accessToken = TokenServices.getToken().access;
-    return axios.get(`${API_ROOM_URL}${params.room_id}/${params.room_slug}/`, {
-      headers: {
-        Authorization: `JWT ${accessToken}`,
-      },
-    });
+    return axios.get(
+      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`,
+      {
+        headers: {
+          Authorization: `JWT ${accessToken}`,
+        },
+      }
+    );
   } catch (err) {
     console.error(err);
   }
@@ -46,7 +49,7 @@ const addRoomMembers = (formData, params) => {
   try {
     const accessToken = TokenServices.getToken().access;
     return axios.post(
-      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/members/`,
+      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
       formData,
       {
         headers: {
@@ -63,7 +66,23 @@ const getRoomMembers = (params) => {
   try {
     const accessToken = TokenServices.getToken().access;
     return axios.get(
-      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/members/`,
+      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
+      {
+        headers: {
+          Authorization: `JWT ${accessToken}`,
+        },
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const kickRoomMember = (roomID, memberID) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.delete(
+      `${API_ROOM_URL}room${roomID}/member${memberID}/destroy/`,
       {
         headers: {
           Authorization: `JWT ${accessToken}`,
@@ -81,6 +100,7 @@ const RoomServices = {
   getRoomData,
   addRoomMembers,
   getRoomMembers,
+  kickRoomMember,
 };
 
 export default RoomServices;

@@ -11,7 +11,6 @@ export default function InviteMembers() {
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const pageSize = 6;
   const params = useParams();
 
@@ -56,10 +55,6 @@ export default function InviteMembers() {
   const handleMembersSubmit = (e) => {
     e.preventDefault();
 
-    setIsLoading(true);
-
-    console.log(selectedValues);
-
     const sendForm = async () => {
       const formData = new FormData();
       formData.append("room_id", params.room_id);
@@ -89,7 +84,7 @@ export default function InviteMembers() {
           onInputChange={handleInputChange}
           inputValue={searchInput}
           formatOptionLabel={({ label }) => (
-            <MemberLabel userFullName={label} />
+            <MemberLabel memberFullName={label} />
           )}
           onChange={handleSelectChange}
           value={selectedValues}

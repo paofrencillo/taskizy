@@ -3,6 +3,7 @@ Holds the views for rooms.
 
 - RoomsListCreateView
 - RoomView
+- RoomAdminUpdateView
 - RoomMembersCreateView
 - RoomMembersRetriveUpdateDestroyView
 """
@@ -10,6 +11,7 @@ Holds the views for rooms.
 from rest_framework.generics import (
     ListCreateAPIView,
     CreateAPIView,
+    UpdateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 
@@ -17,16 +19,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from django.contrib.auth import get_user_model
 from .models import Room, RoomMember
 from tasks.models import Task
-from .serializers import (
-    RoomsListSerializer,
-    RoomSerializer,
-    RoomMembersListSerializer,
-    RoomMembersCreateSerializer,
-)
-
+from .serializers import *
 import json
+
+User = get_user_model()
 
 
 class RoomsListCreateView(ListCreateAPIView):
@@ -50,12 +49,20 @@ class RoomsListCreateView(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
-        queryset = self.get_queryset()
+        user = request.user.id
+        user_room_memberships = RoomMember.objects.filter(
+            room_member=User.objects.get(pk=user)
+        )
+
+        room_ids = [user_room.room_id for user_room in user_room_memberships]
+        queryset = self.get_queryset().filter(room_id__in=room_ids)
         serializer = RoomsListSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RoomView(RetrieveUpdateDestroyAPIView):
+class RoomView(
+    RetrieveUpdateDestroyAPIView,
+):
     """
     View for getting the room data, update, and deleting it.
     """
@@ -66,14 +73,9 @@ class RoomView(RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         room_id = int(self.kwargs.get("room_id"))
-        room_slug = str(self.kwargs.get("room_slug"))
 
         try:
-            queryset = self.get_queryset().filter(
-                room_id=room_id,
-                room_slug=room_slug,
-            )
-
+            queryset = self.get_queryset().filter(room_id=room_id)
             instance = queryset.get()
 
             return instance
@@ -104,7 +106,50 @@ class RoomView(RetrieveUpdateDestroyAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-# views.py
+class RoomAdminUpdateView(UpdateAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomAdminUpdateSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        room_id = int(self.kwargs.get("room_id"))
+
+        try:
+            queryset = self.get_queryset().filter(room_id=room_id)
+            instance = queryset.get()
+
+            return instance
+
+        except Room.DoesNotExist:
+            raise Exception("Room does not exists.")
+
+    def patch(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.serializer_class(
+                instance=instance,
+                data=request.data,
+                partial=True,
+            )
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    data={"message": "Room admin updated."},
+                    status=status.HTTP_200_OK,
+                )
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Room.DoesNotExist:
+            return Response(
+                "Room does not exist or room is invalid.",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
 class RoomMembersListCreateView(ListCreateAPIView):
     """
     View for getting room members and adding new ones.

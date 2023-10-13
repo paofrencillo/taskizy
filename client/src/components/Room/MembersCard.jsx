@@ -11,28 +11,44 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
+  Menu,
+  MenuHandler,
+  MenuItem,
+  MenuList,
 } from "@material-tailwind/react";
+import InviteMembers from "./InviteMembers";
+import RoomServices from "../../services/RoomServices";
+import { ToastContainer, toast } from "react-toastify";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { RiUserStarLine } from "react-icons/ri";
 import { GrFormClose } from "react-icons/gr";
-import { HiLogout } from "react-icons/hi";
-import InviteMembers from "./InviteMembers";
-import RoomServices from "../../services/RoomServices";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 export function MembersCard({ roomMembers, roomAdmin, user }) {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [openKickDialog, setOpenKickDialog] = useState(false);
+  const [openAdminDialog, setOpenAdminDialog] = useState(false);
   const [memberID, setMemberID] = useState(0);
   const handleOpenInviteDialog = () => setOpenInviteDialog(!openInviteDialog);
   const handleOpenKickDialog = () => setOpenKickDialog(!openKickDialog);
+  const handleOpenAdminDialog = () => setOpenAdminDialog(!openAdminDialog);
   const params = useParams();
 
+  // Gets the member id after clicking of kick option
   const getMemberIDToKick = (e) => {
     const getMemberID = e.currentTarget.getAttribute("data-member-id");
     setMemberID(parseInt(getMemberID));
     setOpenKickDialog(true);
   };
 
+  // Gets the member id after clicking of assign as admin option
+  const getMemberIDToAdmin = (e) => {
+    const getMemberID = e.currentTarget.getAttribute("data-member-id");
+    setMemberID(parseInt(getMemberID));
+    setOpenAdminDialog(true);
+  };
+
+  // Handles the sending of member to be kicked
   const handleSendKickMember = async () => {
     try {
       const response = await RoomServices.kickRoomMember(
@@ -47,8 +63,34 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
     }
   };
 
+  // Handles the sending of member to assign as admin
+  const handleSendAdminMember = async () => {
+    try {
+      const response = await RoomServices.assignAdminRoomMember(
+        params.room_id,
+        params.room_slug,
+        memberID
+      );
+      if (response.status === 200) {
+        location.reload();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Handles the logic for leaving of room member
+  const handleLeaveMember = () => {
+    if (roomAdmin.id === user.userID) {
+      toast.warn("Room ADMIN can't leave this room.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
       {/*  */}
       {/* Kick Member */}
       {/*  */}
@@ -93,6 +135,49 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
       </Dialog>
 
       {/*  */}
+      {/* Assign as admin dialog */}
+      {/*  */}
+      <Dialog size="xs" open={openAdminDialog} handler={setOpenAdminDialog}>
+        <DialogHeader className="flex justify-between text-lg">
+          Assign as Room Admin
+          <span
+            className="float-right text-2xl cursor-pointer"
+            onClick={handleOpenAdminDialog}
+          >
+            <GrFormClose />
+          </span>
+        </DialogHeader>
+        <DialogBody divider>
+          Are you sure you want make&nbsp;
+          <span className="font-semibold">
+            {roomMembers.map((member) => {
+              if (member.id === memberID) {
+                return `${member.first_name} ${member.last_name}`;
+              }
+            })}{" "}
+          </span>
+          as ADMIN of this room?
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpenKickDialog}
+            className="mr-1 active:border-0"
+          >
+            <span>Cancel</span>
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={handleSendAdminMember}
+          >
+            <span>Yes, Proceed</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/*  */}
       {/* Invite Members */}
       {/*  */}
       <Dialog open={openInviteDialog} handler={setOpenInviteDialog}>
@@ -127,12 +212,15 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
               Members
               <span className="ml-2">{roomMembers.length}</span>
             </Typography>
-            <Typography className="font-extralight text-xs text-red-300 hover:text-red-900 cursor-pointer">
+            <Typography
+              className="font-extralight text-xs text-red-300 hover:text-red-900 cursor-pointer"
+              onClick={handleLeaveMember}
+            >
               Leave Room
             </Typography>
           </div>
 
-          <div className="flex flex-col justify-between max-h-[70vh] overflow-y-auto gap-4 pr-6">
+          <div className="flex flex-col justify-between max-h-[70vh] overflow-y-auto gap-4 pr-2">
             {roomMembers ? (
               roomMembers.map((member) => (
                 <div
@@ -152,19 +240,44 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
                     </Typography>
                   </div>
                   <div className="flex justify-end items-center gap-2">
-                    {member.id === roomAdmin.id ? (
+                    {member.id === roomAdmin.id && (
                       <RiUserStarLine
-                        className="text-yellow-800 text-lg"
+                        className="text-yellow-800 text-lg mx-1.5"
                         title="Room Admin"
                       />
-                    ) : (
-                      <HiLogout
-                        data-member-id={member.id}
-                        className="text-red-300 hover:text-red-900 text-lg cursor-pointer"
-                        title="Kick"
-                        onClick={getMemberIDToKick}
-                      />
                     )}
+
+                    {member.id !== roomAdmin.id &&
+                      member.id !== user.userID &&
+                      roomAdmin.id === user.userID && (
+                        <Menu placement="bottom-end">
+                          <MenuHandler>
+                            <IconButton
+                              variant="text"
+                              size="sm"
+                              className="p-0 m-0"
+                            >
+                              <BsThreeDotsVertical />
+                            </IconButton>
+                          </MenuHandler>
+                          <MenuList>
+                            <MenuItem
+                              data-member-id={member.id}
+                              className="flex items-center text-red-300 hover:!text-red-900 hover:!bg-red-100 text-sm cursor-pointer"
+                              onClick={getMemberIDToKick}
+                            >
+                              Kick
+                            </MenuItem>
+                            <MenuItem
+                              data-member-id={member.id}
+                              className="flex items-center text-yellow-700 hover:!text-yellow-900 hover:!bg-yellow-100 text-sm cursor-pointer"
+                              onClick={getMemberIDToAdmin}
+                            >
+                              Assign as Admin
+                            </MenuItem>
+                          </MenuList>
+                        </Menu>
+                      )}
                   </div>
                 </div>
               ))

@@ -8,8 +8,19 @@
   font-family: "Nunito", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  background-color: whitesmoke;
+  background-color: rgb(255, 255, 255);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(144, 0, 173, 0.5);
+  box-shadow: 0 0 1px rgba(223, 68, 254, 0.5);
 }

@@ -32,16 +32,19 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
     params ? setRoomID(params.room_id) : setRoomID(0);
   }, [tasks, params]);
 
+  // Get the task ID of the task to be deleted
   const handleTrashGetTaskID = (e) => {
     setDeleteTaskID(e.currentTarget.getAttribute("data-task-id"));
     setOpenDeleteModal(true);
   };
 
+  // Get the task ID of the task to be marked as done
   const handleDoneGetTaskID = (e) => {
     const doneTaskID = e.currentTarget.getAttribute("data-task-id");
     handleSendTaskDone(doneTaskID);
   };
 
+  // Send the taskID of the task to be marked as done to the server
   const handleSendTaskDone = async (doneTaskID) => {
     setIsloading(true);
     try {
@@ -59,6 +62,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
     }
   };
 
+  // Send the taskID of the task to be deleted to the server
   const handleSendTaskTrash = () => {
     const sendData = async () => {
       try {
@@ -226,7 +230,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
               </Card>
             );
           })
-        ) : isLoading === false && !tasks ? (
+        ) : isLoading === false && (!tasks || tasks.length === 0) ? (
           <Typography
             variant="h3"
             color="purple"

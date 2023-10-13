@@ -94,6 +94,24 @@ const kickRoomMember = (roomID, memberID) => {
   }
 };
 
+const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.patch(
+      `${API_ROOM_URL}room${roomID}/room${roomSlug}/assign_as_admin/`,
+      { room_admin: memberID },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${accessToken}`,
+        },
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const RoomServices = {
   createRoom,
   getRooms,
@@ -101,6 +119,7 @@ const RoomServices = {
   addRoomMembers,
   getRoomMembers,
   kickRoomMember,
+  assignAdminRoomMember,
 };
 
 export default RoomServices;

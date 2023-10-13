@@ -1,65 +1,46 @@
-// import { useOutletContext } from "react-router-dom";
+import { useEffect, useState } from "react";
+import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
+import { useOutletContext } from "react-router-dom";
+import TaskServices from "../services/TaskServices";
+import TasksTable from "../components/Tasks/TasksTable";
 
 export default function Tasks() {
-  // const user = useOutletContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const [tasksData, setTasksData] = useState([]);
+  const user = useOutletContext();
+
+  useEffect(() => {
+    const fetchTasksData = async () => {
+      try {
+        const response = await TaskServices.getUserTasks(user.userID);
+        if (response.status === 200) {
+          setIsLoading(false);
+          setTasksData(response.data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchTasksData();
+  }, [user.userID]);
 
   return (
     <>
-      <div className="flex flex-col p-8">
-        <div className="">
-          <div className="inline-block w-full">
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-left text-sm font-light">
-                <thead className="border-b font-medium dark:border-neutral-500">
-                  <tr>
-                    <th scope="col" className="px-6 py-4">
-                      Task
-                    </th>
-                    <th scope="col" className="px-6 py-4">
-                      Priority
-                    </th>
-                    <th scope="col" className="px-6 py-4">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-4">
-                      Room
-                    </th>
-                    <th scope="col" className="px-6 py-4">
-                      #
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b transition duration-300 ease-in-out hover:bg-purple-100">
-                    <td className="whitespace-nowrap px-6 py-4 font-medium">
-                      1
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                    <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                    <td className="whitespace-nowrap px-6 py-4">@mdo</td>
-                  </tr>
-                  <tr className="border-b transition duration-300 ease-in-out hover:bg-purple-100">
-                    <td className="whitespace-nowrap px-6 py-4 font-medium">
-                      2
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">Jacob</td>
-                    <td className="whitespace-nowrap px-6 py-4">Thornton</td>
-                    <td className="whitespace-nowrap px-6 py-4">@fat</td>
-                  </tr>
-                  <tr className="border-b transition duration-300 ease-in-out hover:bg-purple-100">
-                    <td className="whitespace-nowrap px-6 py-4 font-medium">
-                      3
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">Larry</td>
-                    <td className="whitespace-nowrap px-6 py-4">Wild</td>
-                    <td className="whitespace-nowrap px-6 py-4">@twitter</td>
-                  </tr>
-                </tbody>
-              </table>
+      {isLoading ? (
+        <div className="w-screen h-screen">
+          <MutatingDotsLoader />
+        </div>
+      ) : (
+        <div className="flex flex-col pt-16 p-8">
+          <div className="">
+            <div className="inline-block w-full">
+              <div className="overflow-x-auto">
+                <TasksTable tasksData={tasksData} user={user} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

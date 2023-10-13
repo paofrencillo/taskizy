@@ -1,6 +1,19 @@
 import axios from "axios";
 import TokenServices from "./tokenServices";
-import { API_TASK_URL } from "../config/apiUrls";
+import { API_TASKS_URL, API_TASK_URL } from "../config/apiUrls";
+
+const getUserTasks = (userID) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.get(`${API_TASKS_URL}user${userID}/`, {
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 const createTask = (taskFormData, roomID) => {
   try {
@@ -49,6 +62,7 @@ const deleteTask = (taskID, roomID) => {
 };
 
 const TaskServices = {
+  getUserTasks,
   createTask,
   markAsDoneTask,
   deleteTask,

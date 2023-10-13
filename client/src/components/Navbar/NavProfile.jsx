@@ -56,7 +56,7 @@ export default function NavProfile({ fullName }) {
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        <MenuItem className="gap-2 rounded !cursor-auto">
+        <MenuItem className="gap-2 rounded !cursor-auto w-full">
           <Typography
             as="span"
             variant="small"
@@ -67,12 +67,12 @@ export default function NavProfile({ fullName }) {
         </MenuItem>
         <MenuItem
           onClick={closeMenu}
-          className="flex items-center gap-2 rounded"
+          className="flex items-center gap-2 rounded w-full"
         >
           <Typography
             as="span"
             variant="small"
-            className="font-normal flex gap-1 items-center text-gray-600 hover:text-purple-500 transition-colors"
+            className="font-normal flex gap-1 items-center w-full text-gray-600 hover:text-purple-500 transition-colors"
           >
             <BsPersonCircle />
             My Profile
@@ -80,12 +80,12 @@ export default function NavProfile({ fullName }) {
         </MenuItem>
         <MenuItem
           onClick={closeMenu}
-          className="flex items-center gap-2 rounded"
+          className="flex items-center gap-2 rounded w-full"
         >
           <Typography
             as="span"
             variant="small"
-            className="font-normal flex gap-1 items-center text-red-300 hover:text-red-500 transition-colors"
+            className="font-normal flex gap-1 items-center w-full text-red-300 hover:text-red-500 transition-colors"
             onClick={handleLogout}
           >
             <RiShutDownLine />

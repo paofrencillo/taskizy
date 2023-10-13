@@ -127,8 +127,26 @@ class RoomSerializer(serializers.ModelSerializer):
         except ZeroDivisionError:
             return 0
 
-    def update(self, validated_data):
-        pass
+
+class RoomAdminUpdateSerializer(serializers.Serializer):
+    room_admin = serializers.IntegerField()
+
+    def update(self, instance, validated_data):
+        new_admin_id = validated_data.get("room_admin")
+
+        if new_admin_id is not None:
+            try:
+                # Get the new room_admin User instance
+                new_admin = User.objects.get(pk=new_admin_id)
+            except User.DoesNotExist:
+                raise serializers.ValidationError(
+                    "User with the specified ID does not exists"
+                )
+
+            # Update the room_admin of the room instance
+            instance.room_admin = new_admin
+            instance.save()
+        return instance
 
 
 class RoomMembersListSerializer(serializers.ModelSerializer):

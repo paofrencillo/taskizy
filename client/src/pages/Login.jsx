@@ -14,7 +14,7 @@ export default function Login() {
   const token = TokenServices.getToken().refresh;
 
   if (token) {
-    return <Navigate to={"/dashboard"} />;
+    return <Navigate to={"/rooms"} />;
   }
 
   function handleLoginFormSubmit(e) {
@@ -29,7 +29,7 @@ export default function Login() {
         .then((res) => {
           if (res.status === 200) {
             TokenServices.saveToken(res.data);
-            return redirect("/dashboard");
+            return redirect("/rooms");
           }
         })
         .catch((err) => {
@@ -68,7 +68,7 @@ export default function Login() {
               Email
             </label>
             <div className="flex mb-4">
-              <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-purple-100 border border-r-0 border-purple-300 rounded-l-md ">
+              <span className="inline-flex items-center px-3 text-sm text-gray-700 bg-purple-100 border border-r-0 border-purple-300 rounded-l-md ">
                 <MdMail />
               </span>
               <input

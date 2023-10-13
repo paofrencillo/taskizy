@@ -11,12 +11,16 @@ User = get_user_model()
 
 
 class TasksListCreateView(ListCreateAPIView):
+    """
+    View for retrieving a task list of a room and also create ones.
+    """
+
     queryset = Task.objects.all()
     serializer_class = TasksListSerializer
     permission_classes = (IsAuthenticated,)
 
     def list(self, request, room_id, room_slug):
-        queryset = Task.objects.filter(room_id=room_id)
+        queryset = self.get_queryset().filter(room_id=room_id)
         serializer = self.serializer_class(
             queryset,
             many=True,
@@ -44,11 +48,43 @@ class TasksListCreateView(ListCreateAPIView):
                 TasksListSerializer(task).data, status=status.HTTP_201_CREATED
             )
 
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserTasksListCreateView(ListCreateAPIView):
+    """
+    View for retrieve a list of user tasks and create task.
+    """
+
+    queryset = Task.objects.all()
+    serializer_class = TasksListSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request, *args, **kwargs):
+        try:
+            user = request.user.id
+            userID_from_url = self.kwargs.get("pk")
+
+            # Check first if request.user.id == userID from the URL
+            if user != userID_from_url:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            queryset = self.get_queryset().filter(tasker=User.objects.get(pk=user))
+            serializer = self.serializer_class(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def create(self, request, *args, **kwargs):
+        pass
+
+
 class TaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    """
+    View for executing RUD on selected task.
+    """
+
     queryset = Task.objects.all()
     serializer_class = TasksListSerializer
     permission_classes = (IsAuthenticated,)

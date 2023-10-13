@@ -3,7 +3,6 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Activate from "./pages/Activate.jsx";
 import ActivateSuccess from "./pages/Success/ActivateSuccess.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 import Rooms from "./pages/Rooms.jsx";
 import Tasks from "./pages/Tasks.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -20,7 +19,6 @@ export default function App() {
       <Router>
         <Routes>
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/room/:room_id/:room_slug" element={<Room />} />
             <Route path="/tasks" element={<Tasks />} />

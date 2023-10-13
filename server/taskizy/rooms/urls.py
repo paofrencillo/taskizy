@@ -1,5 +1,11 @@
 from django.urls import path
-from .views import *
+from .views import (
+    RoomsListCreateView,
+    RoomView,
+    RoomMembersListCreateView,
+    RoomAdminUpdateView,
+    RoomMembersRetrieveUpdateDestroyView,
+)
 
 urlpatterns = [
     path(
@@ -16,6 +22,11 @@ urlpatterns = [
         "room/room<int:room_id>/<slug:room_slug>/members/",
         RoomMembersListCreateView.as_view(),
         name="room-members",
+    ),
+    path(
+        "room/room<int:room_id>/<slug:room_slug>/assign_as_admin/",
+        RoomAdminUpdateView.as_view(),
+        name="room-assign-admin",
     ),
     path(
         "room/room<int:room_id>/member<int:member_id>/retrieve/",

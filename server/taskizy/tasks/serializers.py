@@ -10,6 +10,9 @@ User = get_user_model()
 class TasksListSerializer(serializers.ModelSerializer):
     creator = UserSerializer(many=False, read_only=True)
     tasker = UserSerializer(many=False, read_only=True)
+    room_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    room = serializers.StringRelatedField(read_only=True)
+    room_slug = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
@@ -20,7 +23,13 @@ class TasksListSerializer(serializers.ModelSerializer):
             "is_completed",
             "creator",
             "tasker",
+            "room_id",
+            "room",
+            "room_slug",
         ]
+
+    def get_room_slug(self, obj):
+        return Room.objects.get(room_id=obj.room_id).room_slug
 
 
 class TaskCreateSerializer(serializers.Serializer):
@@ -29,7 +38,6 @@ class TaskCreateSerializer(serializers.Serializer):
     is_urgent = serializers.CharField()
 
     def create(self, validated_data):
-        print(validated_data)
         try:
             tasker_id = int(validated_data["tasker"])
             creator_id = int(self.context["request"].user.id)

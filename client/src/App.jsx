@@ -22,7 +22,7 @@ export default function App() {
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/room/:room_id/:room_slug" element={<Room />} />
             <Route path="/tasks" element={<Tasks />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/me" element={<Profile />} />
           </Route>
 
           <Route path="/" element={<Login />} />

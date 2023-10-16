@@ -1,7 +1,253 @@
-// import { useOutletContext } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  IconButton,
+  Input,
+} from "@material-tailwind/react";
+import { ToastContainer, toast } from "react-toastify";
+import { TbPhotoEdit } from "react-icons/tb";
+import UsersServices from "../services/UsersServices";
+import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 
 export default function Profile() {
-  // const user = useOutletContext();
+  const [userData, setUserData] = useState({});
+  const [backupUserData, setBackupUserData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  return <div>Profile</div>;
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await UsersServices.getUser();
+        if (response.status === 200) {
+          setUserData(response.data);
+          setIsLoading(false);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUserData();
+  }, [formSubmitted]); // Listen for changes in formSubmitted
+
+  // handles states if update button was clicked
+  const handleUpdateOnClick = () => {
+    setIsEditing(!isEditing);
+    setBackupUserData(userData);
+  };
+
+  // handles states if cancel button was clicked
+  const handleResetOnClick = () => {
+    setIsEditing(!isEditing);
+    setUserData(backupUserData);
+  };
+
+  // Function to handle input changes
+  const handleInputChange = (e) => {
+    let { name, value } = e.target;
+
+    // Split words to capitalize the first letter
+    // Never split 'email' !!
+    if (name !== "email") {
+      let words = value.split(" ");
+
+      // Map through the words and capitalize the first letter
+      words.map((word, index) => {
+        let cap_word = word.charAt().toUpperCase() + word.substring(1);
+        words[index] = cap_word;
+        value = words.join(" ");
+      });
+    }
+
+    // Update the userData state with the new value
+    setUserData({ ...userData, [name]: value });
+  };
+
+  // Function to handle form submit
+  const handleUpdateFormSubmit = (e) => {
+    e.preventDefault();
+    setIsEditing(false);
+
+    const userFormData = new FormData(e.target);
+    const sendFormData = async () => {
+      try {
+        const response = await UsersServices.updateUser(userFormData);
+
+        if (response.status === 205) {
+          setFormSubmitted(!formSubmitted);
+          toast.success("Your profile was updated successfully.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        const formErrors = Object.values(err.response.data)[0];
+        formErrors.map((err_message) => {
+          toast.error(err_message, { position: toast.POSITION.BOTTOM_RIGHT });
+        });
+        setUserData(backupUserData);
+      }
+    };
+
+    sendFormData();
+  };
+
+  console.log(userData);
+
+  const handleUserImageFormSubmit = (e) => {
+    const image = e.target.files;
+
+    // Check if image size is > 3MB (limit file size to 3MB)
+    const maxSize = 3 * 1024 * 1024;
+    if (image[0].size > maxSize) {
+      toast.error("Your image size must not exceeds more than 3MB.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      e.target.value = "";
+    } else if (image[0].size <= maxSize) {
+      const userImageData = new FormData(e.target.closest("form"));
+      const sendFormData = async () => {
+        try {
+          const response = await UsersServices.changeUserImage(userImageData);
+
+          if (response.status === 205) {
+            setFormSubmitted(!formSubmitted);
+            toast.success("Your Image was updated successfully.", {
+              position: toast.POSITION.BOTTOM_RIGHT,
+            });
+          }
+        } catch (err) {
+          console.error(err);
+          const formErrors = Object.values(err.response.data)[0];
+          formErrors.map((err_message) => {
+            toast.error(err_message, { position: toast.POSITION.BOTTOM_RIGHT });
+          });
+          setUserData(backupUserData);
+        }
+      };
+
+      sendFormData();
+    } else return;
+  };
+
+  return (
+    <>
+      {isLoading ? (
+        <div className="w-screen h-screen">
+          <MutatingDotsLoader />
+        </div>
+      ) : (
+        <>
+          <ToastContainer />
+          <div className="flex justify-center items-center pt-24">
+            <Card className="min-w-[350px] w-[450px] flex flex-col justify-center items-center shadow-purple-200 border border-purple-200">
+              <CardBody className="w-full">
+                <div className="flex justify-center items-center">
+                  <div className="relative">
+                    <Avatar
+                      src={
+                        userData.user_image === null
+                          ? "https://images.freeimages.com/images/large-previews/d4f/www-1242368.jpg"
+                          : `http://127.0.0.1:8000${userData.user_image}`
+                      }
+                      alt="avatar"
+                      size="xxl"
+                    />
+                    <form>
+                      <label
+                        htmlFor="user_image"
+                        className="cursor-pointer absolute -bottom-1 -right-1 rounded-full bg-gray-700 p-2"
+                      >
+                        <TbPhotoEdit className=" text-gray-100 text-xl" />
+                        <input
+                          type="file"
+                          name="user_image"
+                          id="user_image"
+                          className="hidden"
+                          accept=".png, .jpg, .jpeg"
+                          onChange={handleUserImageFormSubmit}
+                        />
+                      </label>
+                    </form>
+                  </div>
+                </div>
+                <form onSubmit={handleUpdateFormSubmit}>
+                  <div className="flex flex-col gap-4 mt-8">
+                    <Input
+                      name="first_name"
+                      id="first_name"
+                      color="purple"
+                      label="First Name"
+                      value={userData.first_name}
+                      readOnly={!isEditing}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      name="last_name"
+                      id="last_name"
+                      color="purple"
+                      label="Last Name"
+                      value={userData.last_name}
+                      readOnly={!isEditing}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      name="email"
+                      id="email"
+                      color="purple"
+                      label="Email"
+                      value={userData.email}
+                      readOnly={!isEditing}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      name="role"
+                      id="role"
+                      color="purple"
+                      label="Role"
+                      value="Ano ba role ko"
+                      readOnly={!isEditing}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  {isEditing ? (
+                    <div className="flex gap-4 mt-8 w-full">
+                      <Button
+                        type="reset"
+                        color="red"
+                        className="w-1/3"
+                        onClick={handleResetOnClick}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit" color="green" className="w-full">
+                        Save Profile
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      color="purple"
+                      className="mt-8 w-full"
+                      onClick={handleUpdateOnClick}
+                    >
+                      Edit Profile
+                    </Button>
+                  )}
+                </form>
+              </CardBody>
+            </Card>
+          </div>
+        </>
+      )}
+    </>
+  );
 }

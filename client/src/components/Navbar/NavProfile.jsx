@@ -12,6 +12,7 @@ import { BsChevronDown, BsPersonCircle } from "react-icons/bs";
 import { RiShutDownLine } from "react-icons/ri";
 import TokenServices from "../../services/tokenServices";
 import AuthServices from "../../services/AuthServices";
+import { Link } from "react-router-dom";
 
 export default function NavProfile({ fullName }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,12 +24,12 @@ export default function NavProfile({ fullName }) {
       const response = await AuthServices.logout();
       if (response.status === 205) {
         TokenServices.destroyToken();
-        return (window.location = "/");
+        window.location = "/";
       } else if (response.status === 401) {
         console.error("401 Forbidden");
       }
     } catch (error) {
-      return (window.location = "/500");
+      window.location = "/500";
     }
   }
 
@@ -69,14 +70,16 @@ export default function NavProfile({ fullName }) {
           onClick={closeMenu}
           className="flex items-center gap-2 rounded w-full"
         >
-          <Typography
-            as="span"
-            variant="small"
-            className="font-normal flex gap-1 items-center w-full text-gray-600 hover:text-purple-500 transition-colors"
-          >
-            <BsPersonCircle />
-            My Profile
-          </Typography>
+          <Link to={"/me"}>
+            <Typography
+              as="span"
+              variant="small"
+              className="font-normal flex gap-1 items-center w-full text-gray-600 hover:text-purple-500 transition-colors"
+            >
+              <BsPersonCircle />
+              My Profile
+            </Typography>
+          </Link>
         </MenuItem>
         <MenuItem
           onClick={closeMenu}

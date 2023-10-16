@@ -3,6 +3,7 @@ import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import { useOutletContext } from "react-router-dom";
 import TaskServices from "../services/TaskServices";
 import TasksTable from "../components/Tasks/TasksTable";
+import { Typography } from "@material-tailwind/react";
 
 export default function Tasks() {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,11 +33,12 @@ export default function Tasks() {
         </div>
       ) : (
         <div className="flex flex-col pt-16 p-8">
-          <div className="">
-            <div className="inline-block w-full">
-              <div className="overflow-x-auto">
-                <TasksTable tasksData={tasksData} user={user} />
-              </div>
+          <Typography variant="h4" className="mt-4 w-full text-center">
+            My Tasks
+          </Typography>
+          <div className="inline-block w-full">
+            <div className="overflow-x-auto">
+              <TasksTable tasksData={tasksData} user={user} />
             </div>
           </div>
         </div>

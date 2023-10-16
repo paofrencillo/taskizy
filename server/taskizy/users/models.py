@@ -5,7 +5,7 @@ from .managers import CustomUserManager
 
 
 def upload_to(instance, filename):
-    return "images/{filename}".format(filename=filename)
+    return "profile_images/{filename}".format(filename=filename)
 
 
 class User(AbstractUser, PermissionsMixin):

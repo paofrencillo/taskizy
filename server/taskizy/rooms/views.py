@@ -205,8 +205,8 @@ class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
         try:
             queryset = self.get_queryset().filter(room=room_id, room_member=member_id)
             instance = queryset.get()
-
             return instance
+
         except RoomMember.DoesNotExist:
             raise Exception("Room Member does not exists.")
 
@@ -218,12 +218,16 @@ class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         try:
-            instance = self.get_object().room_member
+            # Get the object instance
+            instance = self.get_object()
 
-            update_tasker = Task.objects.filter(tasker=instance).update(tasker=None)
+            # Update the tasker to None
+            update_tasker = Task.objects.filter(tasker=instance.room_member).update(
+                tasker=None
+            )
 
+            # Delete instance and return a 204 response
             instance.delete()
-
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         except RoomMember.DoesNotExist:

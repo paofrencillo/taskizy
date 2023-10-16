@@ -4,7 +4,7 @@ import { BiDoorOpen, BiTask } from "react-icons/bi";
 
 export default function NavList() {
   return (
-    <ul className="my-2 bg-white flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="bg-white flex justify-center gap-2 items-center lg:gap-6">
       <Typography
         as="li"
         variant="h6"
@@ -14,8 +14,8 @@ export default function NavList() {
           to={"/rooms"}
           className="flex items-center gap-1 hover:text-purple-500 transition-colors"
         >
-          <BiDoorOpen />
-          Rooms
+          <BiDoorOpen className="text-xl" />
+          <span className="hidden md:inline-block">Rooms</span>
         </Link>
       </Typography>
       <Typography
@@ -27,8 +27,8 @@ export default function NavList() {
           to={"/tasks"}
           className="flex items-center gap-1 hover:text-purple-500 transition-colors"
         >
-          <BiTask />
-          Tasks
+          <BiTask className="text-xl" />
+          <span className="hidden md:inline-block">Tasks</span>
         </Link>
       </Typography>
     </ul>

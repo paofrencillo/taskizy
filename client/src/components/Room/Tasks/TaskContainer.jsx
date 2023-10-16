@@ -21,14 +21,14 @@ import MutatingDotsLoader from "../../Loader/MutatingDotsLoader";
 
 export default function TaskContainer({ tasks, user, roomAdmin }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [isLoading, setIsloading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteTaskID, setDeleteTaskID] = useState(0);
   const [roomID, setRoomID] = useState(0);
   const handleOpenDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
   const params = useParams();
 
   useEffect(() => {
-    tasks ? setIsloading(false) : null;
+    tasks ? setIsLoading(false) : null;
     params ? setRoomID(params.room_id) : setRoomID(0);
   }, [tasks, params]);
 
@@ -46,7 +46,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
 
   // Send the taskID of the task to be marked as done to the server
   const handleSendTaskDone = async (doneTaskID) => {
-    setIsloading(true);
+    setIsLoading(true);
     try {
       const response = await TaskServices.markAsDoneTask(roomID, doneTaskID);
       if (response.status === 200) {
@@ -58,7 +58,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
     } catch (err) {
       console.error(err);
     } finally {
-      setIsloading(false);
+      setIsLoading(false);
     }
   };
 
@@ -209,7 +209,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                       )}
 
                     {!task.is_completed &&
-                      (task.tasker.id === user.userID ||
+                      (task.tasker?.id === user.userID ||
                         roomAdmin.id === user.userID) && (
                         <Button
                           data-task-id={task.task_id}

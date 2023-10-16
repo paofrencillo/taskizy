@@ -35,11 +35,11 @@ export default function Login() {
         .catch((err) => {
           if (err.response.status === 401) {
             toast.error("Invalid username or password", {
-              position: toast.POSITION.TOP_RIGHT,
+              position: toast.POSITION.BOTTOM_RIGHT,
             });
           } else {
             toast.error("Something is wrong. Try to refresh the page.", {
-              position: toast.POSITION.TOP_RIGHT,
+              position: toast.POSITION.BOTTOM_RIGHT,
             });
           }
         })

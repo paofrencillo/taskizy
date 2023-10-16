@@ -15,12 +15,24 @@ class Room(models.Model):
         serialize=False,
     )
 
-    room_name = models.CharField(_("room_name"), max_length=25, null=False, blank=False)
+    room_name = models.CharField(
+        _("room_name"),
+        max_length=25,
+        null=False,
+        blank=False,
+    )
 
-    room_created_on = models.DateTimeField(_("room_created_on"), auto_now_add=True)
+    room_created_on = models.DateTimeField(
+        _("room_created_on"),
+        auto_now_add=True,
+    )
 
     room_admin = models.ForeignKey(
-        User, verbose_name=_("room_admin"), on_delete=models.RESTRICT
+        User,
+        verbose_name=_("room_admin"),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
     )
 
     room_slug = models.SlugField(_("room_slug"))
@@ -34,9 +46,19 @@ class Room(models.Model):
 
 
 class RoomMember(models.Model):
-    room = models.ForeignKey(Room, verbose_name=_("room_id"), on_delete=models.CASCADE)
+    room = models.ForeignKey(
+        Room,
+        verbose_name=_("room_id"),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+    )
     room_member = models.ForeignKey(
-        User, verbose_name=_("room_member_id"), on_delete=models.CASCADE
+        User,
+        verbose_name=_("room_member_id"),
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=False,
     )
 
     def __str__(self):

@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,10 +22,53 @@ class UsersListView(APIView):
                 pk__in=[member.room_member_id for member in member_queryset]
             )
         except User.DoesNotExist:
-            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserSerializer(user_queryset, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        try:
+            instance = self.request.user
+            return instance
+        except User.DoesNotExist:
+            return None
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if instance is not None:
+            serializer = self.serializer_class(instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+
+        if instance is not None:
+            serializer = self.serializer_class(
+                instance=instance, data=data, partial=True
+            )
+
+            if serializer.is_valid():
+                user = serializer.save()
+                user_serialzed = UserSerializer(instance=user)
+                return Response(
+                    user_serialzed.data, status=status.HTTP_205_RESET_CONTENT
+                )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(user_serialzed.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, requests, *args, **kwargs):
+        pass
 
 
 class LogoutView(APIView):

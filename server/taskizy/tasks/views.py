@@ -32,8 +32,6 @@ class TasksListCreateView(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request, room_id):
-        print(request.data)
-        print(room_id)
         serializer = TaskCreateSerializer(
             data=request.data,
             context={
@@ -114,7 +112,6 @@ class TaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
-                print(serializer.errors)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Task.DoesNotExist:

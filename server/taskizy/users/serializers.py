@@ -33,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "id",
+            "email",
             "first_name",
             "last_name",
             "user_image",
@@ -44,6 +45,9 @@ class UserSerializer(serializers.ModelSerializer):
             return img
         except ValueError:
             return "No Image"
+
+    # def update(self, instance, validated_data):
+    #     pass
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

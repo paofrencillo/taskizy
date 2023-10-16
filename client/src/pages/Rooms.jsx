@@ -6,7 +6,6 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
-import { ToastContainer, toast } from "react-toastify";
 import RoomServices from "../services/RoomServices";
 import RoomCard from "../components/Rooms/RoomCard";
 import AddRoomBtn from "../components/Rooms/AddRoomBtn";
@@ -51,13 +50,7 @@ export default function Rooms() {
     RoomServices.createRoom(roomFormData)
       .then((res) => {
         if (res.status === 201) {
-          toast.success(`${res.data.room_name} room created successfully`, {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
-
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+          location.reload();
         }
       })
       .catch((err) => {
@@ -73,7 +66,6 @@ export default function Rooms() {
         </div>
       ) : (
         <div className="pt-16">
-          <ToastContainer />
           <div className="flex flex-wrap justify-center gap-8 p-8">
             {rooms.map((room) => {
               return <RoomCard key={room.room_id} roomData={room} />;

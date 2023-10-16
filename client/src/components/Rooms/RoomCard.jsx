@@ -60,7 +60,7 @@ export default function RoomCard(props) {
         </div>
       </div>
       {/* Body */}
-      <div className="flex flex-col gap-2 px-4 py-2 my-4">
+      <div className="flex justify-center flex-col gap-2 px-4 py-2 my-4">
         <Typography
           variant="small"
           color="gray"
@@ -74,7 +74,7 @@ export default function RoomCard(props) {
           color="purple"
         />
 
-        <div className="px-6 py-2 shadow-md rounded-md w-fit text-center">
+        <div className="px-6 py-2 shadow-md rounded-md w-full text-center">
           <Typography variant="small">Total Task</Typography>
           <Typography variant="h6" color="purple">
             {props.roomData.tasks_count}

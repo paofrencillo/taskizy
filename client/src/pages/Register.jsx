@@ -31,14 +31,14 @@ export default function Register() {
           if (res.status === 201) {
             toast.success(
               "Account created successfully! Check your email's inbox for activation link.",
-              { position: toast.POSITION.TOP_RIGHT }
+              { position: toast.POSITION.BOTTOM_RIGHT }
             );
           }
         })
         .catch((err) => {
           const formErrors = Object.values(err.response.data)[0];
           formErrors.map((err) => {
-            toast.error(err, { position: toast.POSITION.TOP_RIGHT });
+            toast.error(err, { position: toast.POSITION.BOTTOM_RIGHT });
           });
         })
         .finally(() => {

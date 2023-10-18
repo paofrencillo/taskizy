@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Typography,
   Button,
@@ -12,9 +13,10 @@ import { BsChevronDown, BsPersonCircle } from "react-icons/bs";
 import { RiShutDownLine } from "react-icons/ri";
 import TokenServices from "../../services/tokenServices";
 import AuthServices from "../../services/AuthServices";
-import { Link } from "react-router-dom";
+import { SERVER_URL } from "../../config/apiUrls";
+import { freeUserImgURL } from "../../config/userImgs";
 
-export default function NavProfile({ fullName }) {
+export default function NavProfile({ fullName, userImg }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -44,10 +46,15 @@ export default function NavProfile({ fullName }) {
           <Avatar
             variant="circular"
             size="sm"
-            alt="tania andrew"
+            alt="user-image"
             className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+            src={
+              userImg === null || userImg === undefined
+                ? freeUserImgURL
+                : `${SERVER_URL}${userImg}`
+            }
           />
+
           <BsChevronDown
             strokeWidth={2.5}
             className={`h-3 w-3 transition-transform ${

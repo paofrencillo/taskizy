@@ -10,12 +10,14 @@ import RoomServices from "../services/RoomServices";
 import RoomCard from "../components/Rooms/RoomCard";
 import AddRoomBtn from "../components/Rooms/AddRoomBtn";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
+import { useOutletContext } from "react-router-dom";
 
 export default function Rooms() {
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [charNum, setCharNum] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const user = useOutletContext();
 
   useEffect(() => {
     // Fetch and set rooms when the component mounts
@@ -32,6 +34,7 @@ export default function Rooms() {
     };
 
     fetchRooms();
+    document.title = "Taskizy | Rooms";
   }, []);
 
   // Handle add room modal
@@ -68,7 +71,9 @@ export default function Rooms() {
         <div className="pt-16">
           <div className="flex flex-wrap justify-center gap-8 p-8">
             {rooms.map((room) => {
-              return <RoomCard key={room.room_id} roomData={room} />;
+              return (
+                <RoomCard key={room.room_id} roomData={room} user={user} />
+              );
             })}
           </div>
 
@@ -95,14 +100,7 @@ export default function Rooms() {
           </div>
 
           {/* Modal */}
-          <Dialog
-            open={showModal}
-            handler={handleShowModal}
-            animate={{
-              mount: { scale: 1, y: 0 },
-              unmount: { scale: 0.9, y: -100 },
-            }}
-          >
+          <Dialog open={showModal} handler={handleShowModal}>
             <DialogHeader>Create New Room</DialogHeader>
             <form onSubmit={handleFormSubmit}>
               <DialogBody divider>

@@ -4,10 +4,10 @@ import {
   Button,
   Card,
   CardBody,
-  IconButton,
   Input,
 } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { TbPhotoEdit } from "react-icons/tb";
 import UsersServices from "../services/UsersServices";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
@@ -80,15 +80,13 @@ export default function Profile() {
 
         if (response.status === 205) {
           setFormSubmitted(!formSubmitted);
-          toast.success("Your profile was updated successfully.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          toast.success("Your profile was updated successfully.");
         }
       } catch (err) {
         console.error(err);
         const formErrors = Object.values(err.response.data)[0];
         formErrors.map((err_message) => {
-          toast.error(err_message, { position: toast.POSITION.BOTTOM_RIGHT });
+          toast.error(err_message);
         });
         setUserData(backupUserData);
       }
@@ -97,17 +95,13 @@ export default function Profile() {
     sendFormData();
   };
 
-  console.log(userData);
-
   const handleUserImageFormSubmit = (e) => {
     const image = e.target.files;
 
     // Check if image size is > 3MB (limit file size to 3MB)
     const maxSize = 3 * 1024 * 1024;
     if (image[0].size > maxSize) {
-      toast.error("Your image size must not exceeds more than 3MB.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.error("Your image size must not exceeds more than 3MB.");
       e.target.value = "";
     } else if (image[0].size <= maxSize) {
       const userImageData = new FormData(e.target.closest("form"));
@@ -117,15 +111,13 @@ export default function Profile() {
 
           if (response.status === 205) {
             setFormSubmitted(!formSubmitted);
-            toast.success("Your Image was updated successfully.", {
-              position: toast.POSITION.BOTTOM_RIGHT,
-            });
+            toast.success("Your Image was updated successfully.");
           }
         } catch (err) {
           console.error(err);
           const formErrors = Object.values(err.response.data)[0];
           formErrors.map((err_message) => {
-            toast.error(err_message, { position: toast.POSITION.BOTTOM_RIGHT });
+            toast.error(err_message);
           });
           setUserData(backupUserData);
         }
@@ -143,7 +135,7 @@ export default function Profile() {
         </div>
       ) : (
         <>
-          <ToastContainer />
+          <ToastContainer position="bottom-right" />
           <div className="flex justify-center items-center pt-24">
             <Card className="min-w-[350px] w-[450px] flex flex-col justify-center items-center shadow-purple-200 border border-purple-200">
               <CardBody className="w-full">
@@ -151,8 +143,9 @@ export default function Profile() {
                   <div className="relative">
                     <Avatar
                       src={
-                        userData.user_image === null
-                          ? "https://images.freeimages.com/images/large-previews/d4f/www-1242368.jpg"
+                        userData.user_image === null ||
+                        userData.user_image === undefined
+                          ? "https://img.freepik.com/free-vector/cute-astronaut-dance-cartoon-vector-icon-illustration-technology-science-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3851.jpg?w=740&t=st=1697513748~exp=1697514348~hmac=91629226d8cfffc849dce53dc83f9128e68a93a5fe7bc9273638b8efb0988ba1"
                           : `http://127.0.0.1:8000${userData.user_image}`
                       }
                       alt="avatar"
@@ -162,6 +155,7 @@ export default function Profile() {
                       <label
                         htmlFor="user_image"
                         className="cursor-pointer absolute -bottom-1 -right-1 rounded-full bg-gray-700 p-2"
+                        title="Replace Image"
                       >
                         <TbPhotoEdit className=" text-gray-100 text-xl" />
                         <input

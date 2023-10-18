@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { ImEnter } from "react-icons/im";
 import { Link } from "react-router-dom";
-import { Progress, Typography } from "@material-tailwind/react";
+import { Avatar, Progress, Typography } from "@material-tailwind/react";
+import { SERVER_URL } from "../../config/apiUrls";
+import { freeUserImgURL } from "../../config/userImgs";
 
-export default function RoomCard(props) {
+export default function RoomCard({ roomData, user }) {
   const [firstMember, setFirstMember] = useState("");
   const [secondMember, setSecondMember] = useState("");
   const [countOtherMember, setCountOtherMember] = useState(0);
@@ -12,8 +14,8 @@ export default function RoomCard(props) {
   useEffect(() => {
     const getMembers = () => {
       const membersList = [];
-      props.roomData.room_members.map((member) => {
-        if (member.id !== props.roomData.room_admin.id) {
+      roomData.room_members.map((member) => {
+        if (member.id !== roomData.room_admin.id) {
           membersList.push(member.first_name);
         }
       });
@@ -41,23 +43,30 @@ export default function RoomCard(props) {
       }
     };
     getMembers();
-  }, [props.roomData, firstMember, secondMember, countOtherMember]);
+  }, [roomData, firstMember, secondMember, countOtherMember]);
 
   return (
     <div className="w-[325px] shadow-md hover:shadow-purple-100 hover:-translate-y-1 rounded-md transition delay-75 duration-150 ease-in-out">
       {/* Header */}
       <div className="flex justify-between items-center gap-4 rounded-t-md bg-purple-700 text-sm text-gray-100 font-semibold p-2">
-        {props.roomData.room_name}
-        <div
-          className="w-10 h-10 bg-white rounded-full"
-          title={`${props.roomData.room_admin.first_name} ${props.roomData.room_admin.last_name}`}
-        >
-          <img
-            src="logo_temp.png"
-            alt="admin-img"
-            className="w-full h-full rounded-full object-cover"
-          />
-        </div>
+        {roomData.room_name}
+        <Avatar
+          variant="circular"
+          size="md"
+          alt="user-image"
+          className="p-0.5 bg-gray-100"
+          src={
+            roomData.room_admin.user_image === null ||
+            roomData.room_admin.user_image === undefined
+              ? freeUserImgURL
+              : `${SERVER_URL}${roomData.room_admin.user_image}`
+          }
+          title={
+            roomData.room_admin.id === user.userID
+              ? "Me"
+              : `${roomData.room_admin.first_name} ${roomData.room_admin.last_name}`
+          }
+        />
       </div>
       {/* Body */}
       <div className="flex justify-center flex-col gap-2 px-4 py-2 my-4">
@@ -66,26 +75,24 @@ export default function RoomCard(props) {
           color="gray"
           className="text-center w-full  mb-2"
         >
-          {props.roomData.task_completed_perc}% Tasks Completed
+          {roomData.task_completed_perc}% Tasks Completed
         </Typography>
         <Progress
           size="lg"
-          value={props.roomData.task_completed_perc}
+          value={roomData.task_completed_perc}
           color="purple"
         />
 
         <div className="px-6 py-2 shadow-md rounded-md w-full text-center">
           <Typography variant="small">Total Task</Typography>
           <Typography variant="h6" color="purple">
-            {props.roomData.tasks_count}
+            {roomData.tasks_count}
           </Typography>
         </div>
       </div>
       <div className="flex justify-between items-center text-xs px-4 py-2 text-purple-700 italic">
         {roomMembers}
-        <Link
-          to={`/room/${props.roomData.room_id}/${props.roomData.room_slug}`}
-        >
+        <Link to={`/room/${roomData.room_id}/${roomData.room_slug}`}>
           <ImEnter className="text-2xl text-yellow-700 hover:text-yellow-800 cursor-pointer" />
         </Link>
       </div>

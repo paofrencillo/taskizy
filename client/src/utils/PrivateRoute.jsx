@@ -2,27 +2,54 @@ import { Navigate, Outlet } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import TokenServices from "../services/tokenServices";
 import { Nav } from "../components/Navbar/Nav";
+import { useEffect, useState } from "react";
 
 export default function PrivateRoute(props) {
-  const accessToken = TokenServices.getToken().access;
+  const [accessToken, setAccessToken] = useState(
+    TokenServices.getToken().access
+  );
+  const [userData, setUserData] = useState({});
 
-  setInterval(() => {
-    TokenServices.refreshTokens();
-  }, 5000);
+  useEffect(() => {
+    const refreshTokens = () => {
+      TokenServices.refreshTokens();
+      setAccessToken(TokenServices.getToken().access);
+      const decodedAccessToken = jwt_decode(accessToken);
+
+      // Decode the token and update the user data
+      const { first_name, last_name, user_id, user_image } = decodedAccessToken;
+      setUserData({
+        userID: user_id,
+        first_name,
+        last_name,
+        fullName: `${first_name} ${last_name}`,
+        userImg: user_image,
+      });
+    };
+    const tokenRefreshInterval = setInterval(() => {
+      refreshTokens();
+    }, 5000);
+
+    return () => clearInterval(tokenRefreshInterval); // Cleanup to clear the interval on unmount
+  }, [accessToken, userData]); // Empty dependency array to run this effect once
 
   if (accessToken) {
     const decodedAccessToken = jwt_decode(accessToken);
-    const expDate = new Date(decodedAccessToken.exp * 1000); // JavaScript uses milliseconds, so multiply by 1000
-    const first_name = decodedAccessToken.first_name;
-    const last_name = decodedAccessToken.last_name;
-    const fullName =
-      decodedAccessToken.first_name + " " + decodedAccessToken.last_name;
-    const userID = decodedAccessToken.user_id;
-    const userData = { userID, first_name, last_name, fullName, expDate };
+    const expDate = new Date(decodedAccessToken.exp * 1000);
+    const { first_name, last_name, user_id, user_image } = decodedAccessToken;
+
+    const userData = {
+      userID: user_id,
+      first_name,
+      last_name,
+      fullName: `${first_name} ${last_name}`,
+      userImg: user_image,
+      expDate,
+    };
 
     return (
       <>
-        <Nav userFullName={userData.fullName} />
+        <Nav userFullName={userData.fullName} userImg={userData.userImg} />
         <Outlet context={userData} />
         {props.children}
       </>

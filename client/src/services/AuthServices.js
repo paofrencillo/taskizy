@@ -21,7 +21,6 @@ const register = (formData) => {
 };
 
 const activate = (params) => {
-  console.log(params);
   try {
     return axios.post(API_AUTH_ACTIVATE_URL, params);
   } catch (err) {

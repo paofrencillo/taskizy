@@ -19,19 +19,24 @@ import {
 import InviteMembers from "./InviteMembers";
 import RoomServices from "../../services/RoomServices";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { RiUserStarLine } from "react-icons/ri";
 import { GrFormClose } from "react-icons/gr";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { freeUserImgURL } from "../../config/userImgs";
+import { SERVER_URL } from "../../config/apiUrls";
 
 export function MembersCard({ roomMembers, roomAdmin, user }) {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [openKickDialog, setOpenKickDialog] = useState(false);
   const [openAdminDialog, setOpenAdminDialog] = useState(false);
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
   const [memberID, setMemberID] = useState(0);
   const handleOpenInviteDialog = () => setOpenInviteDialog(!openInviteDialog);
   const handleOpenKickDialog = () => setOpenKickDialog(!openKickDialog);
   const handleOpenAdminDialog = () => setOpenAdminDialog(!openAdminDialog);
+  const handleOpenLeaveDialog = () => setOpenLeaveDialog(!openLeaveDialog);
   const params = useParams();
 
   // Gets the member id after clicking of kick option
@@ -85,6 +90,33 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
       toast.warn("Room ADMIN can't leave this room.", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
+    } else if (roomAdmin.id !== user.userID) {
+      setOpenLeaveDialog(true);
+    } else {
+      console.error("Something is wrong. Try Again or refresh the page.");
+      toast.error("Something is wrong. Try Again or refresh the page.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    }
+  };
+
+  // Handles the logic for leaving of room member
+  const handleSendLeaveMember = async () => {
+    try {
+      const response = await RoomServices.kickRoomMember(
+        params.room_id,
+        user.userID
+      );
+      if (response.status === 204) {
+        window.location.replace("/rooms");
+      }
+    } catch (err) {
+      console.error("Internal Server Error. Logout and try to login again.");
+      toast.error("Internal Server Error. Logout and try to login again.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } finally {
+      setOpenLeaveDialog(false);
     }
   };
 
@@ -111,7 +143,8 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
               if (member.id === memberID) {
                 return `${member.first_name} ${member.last_name}`;
               }
-            })}{" "}
+            })}
+            &nbsp;
           </span>
           ?
         </DialogBody>
@@ -178,6 +211,43 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
       </Dialog>
 
       {/*  */}
+      {/* Leave member dialog */}
+      {/*  */}
+      <Dialog size="xs" open={openLeaveDialog} handler={setOpenLeaveDialog}>
+        <DialogHeader className="flex justify-between text-lg">
+          Leave Room
+          <span
+            className="float-right text-2xl cursor-pointer"
+            onClick={handleOpenLeaveDialog}
+          >
+            <GrFormClose />
+          </span>
+        </DialogHeader>
+        <DialogBody divider>
+          Are you sure you want{" "}
+          <span className="font-semibold text-red-500">leave</span>&nbsp;this
+          room? Any progress that you made will be deleted.
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpenLeaveDialog}
+            className="mr-1 active:border-0"
+          >
+            <span>Cancel</span>
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={handleSendLeaveMember}
+          >
+            <span>Yes, I want to leave</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/*  */}
       {/* Invite Members */}
       {/*  */}
       <Dialog open={openInviteDialog} handler={setOpenInviteDialog}>
@@ -228,7 +298,16 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
                   className="flex justify-between items-center"
                 >
                   <div className="flex justify-start items-center gap-2">
-                    <Avatar src="/logo_temp.png" alt="member-img" size="sm" />
+                    {member.user_image === null ||
+                    member.user_image === undefined ? (
+                      <Avatar src={freeUserImgURL} alt="member-img" size="sm" />
+                    ) : (
+                      <Avatar
+                        src={`${SERVER_URL}${member.user_image}`}
+                        alt="member-img"
+                        size="sm"
+                      />
+                    )}
 
                     <Typography
                       variant="small"

@@ -25,7 +25,7 @@ class CreateUserSerializer(UserCreateSerializer):
             img = obj.user_image_url
             return img
         except ValueError:
-            return "No Image"
+            return None
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
             img = obj.user_image_url
             return img
         except ValueError:
-            return "No Image"
+            return None
 
     # def update(self, instance, validated_data):
     #     pass
@@ -61,6 +61,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         try:
             token["user_image"] = user.user_image.url
         except ValueError:
-            token["user_image"] = "No Image"
+            token["user_image"] = None
 
         return token

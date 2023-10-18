@@ -60,13 +60,16 @@ export default function Room() {
     };
 
     fetchRoomData();
+    document.title = `Taskizy | ${
+      roomData.length === 0 ? "" : roomData.room_name
+    } Room`;
 
     // const pollInterval = setInterval(fetchRoomData, 5000); // Poll every 5 seconds
 
     // return () => {
     //   clearInterval(pollInterval); // Clear the interval when the component unmounts
     // };
-  }, [params]);
+  }, [params, roomData.length, roomData.room_name]);
 
   // Define the handleFilterChange function to update tasksFiltered state
   const handleFilterChange = (e) => {

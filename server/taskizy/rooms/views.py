@@ -226,6 +226,11 @@ class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
                 tasker=None
             )
 
+            # Update the creator to None
+            update_creator = Task.objects.filter(creator=instance.room_member).update(
+                creator=None
+            )
+
             # Delete instance and return a 204 response
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

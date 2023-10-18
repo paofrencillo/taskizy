@@ -12,6 +12,11 @@ const getUsers = (roomID) => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -25,6 +30,11 @@ const getUser = () => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -39,6 +49,11 @@ const updateUser = (userFormData) => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -53,6 +68,11 @@ const changeUserImage = (userImageData) => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 

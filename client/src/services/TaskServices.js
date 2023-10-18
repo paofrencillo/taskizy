@@ -26,6 +26,11 @@ const createTask = (taskFormData, roomID) => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.")
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -44,6 +49,11 @@ const markAsDoneTask = (roomID, taskID) => {
     );
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.")
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -58,6 +68,11 @@ const deleteTask = (taskID, roomID) => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.")
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 

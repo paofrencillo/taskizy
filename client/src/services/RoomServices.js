@@ -13,6 +13,11 @@ const createRoom = (roomFormData) => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -26,6 +31,11 @@ const getRooms = () => {
     });
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -42,6 +52,11 @@ const getRoomData = (params) => {
     );
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -59,6 +74,11 @@ const addRoomMembers = (formData, params) => {
     );
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -75,6 +95,11 @@ const getRoomMembers = (params) => {
     );
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 
@@ -91,6 +116,14 @@ const kickRoomMember = (roomID, memberID) => {
     );
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
+    if (err.response.status === 500) {
+      alert("Internal Server Error.");
+    }
   }
 };
 
@@ -109,6 +142,11 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
     );
   } catch (err) {
     console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
   }
 };
 

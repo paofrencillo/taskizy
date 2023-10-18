@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import {
+  Avatar,
   Dialog,
   DialogHeader,
   DialogBody,
@@ -13,6 +14,8 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
 import TaskServices from "../../services/TaskServices";
 import MutatingDotsLoader from "../Loader/MutatingDotsLoader";
+import { SERVER_URL } from "../../config/apiUrls";
+import { anonymousUserImgURL, freeUserImgURL } from "../../config/userImgs";
 
 export default function TasksTable({ tasksData, user }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -209,11 +212,30 @@ export default function TasksTable({ tasksData, user }) {
                         )}
                       </td>
                       <td className="whitespace-nowrap px-4 py-2">
-                        {task.creator.id !== user.userID
-                          ? `${task.creator.first_name} ${task.creator.last_name}`
-                          : task.creator.id === user.userID
-                          ? "Me"
-                          : null}
+                        <div className="flex gap-2 items-center min-w-full">
+                          <div className="min-w-fit min-h-fit">
+                            {task.creator !== null ? (
+                              <Avatar
+                                size="sm"
+                                src={
+                                  task.creator.user_image !== null
+                                    ? `${SERVER_URL}${task.creator.user_image}`
+                                    : freeUserImgURL
+                                }
+                              />
+                            ) : task.creator === null ? (
+                              <Avatar size="sm" src={anonymousUserImgURL} />
+                            ) : null}
+                          </div>
+
+                          <span>
+                            {task.creator.id !== user.userID
+                              ? `${task.creator.first_name} ${task.creator.last_name}`
+                              : task.creator.id === user.userID
+                              ? "Me"
+                              : "AnonymousUser"}
+                          </span>
+                        </div>
                       </td>
                       <td className="whitespace-nowrap px-4 py-2">
                         <Link

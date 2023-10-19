@@ -18,8 +18,12 @@ from rest_framework.generics import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
+from django.core.paginator import Paginator
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import get_user_model
+from tasks.filters import TaskFilter
 from .models import Room, RoomMember
 from tasks.models import Task
 from .serializers import *
@@ -60,9 +64,7 @@ class RoomsListCreateView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RoomView(
-    RetrieveUpdateDestroyAPIView,
-):
+class RoomView(RetrieveUpdateDestroyAPIView):
     """
     View for getting the room data, update, and deleting it.
     """
@@ -70,6 +72,10 @@ class RoomView(
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = PageNumberPagination
+
+    filter_backends = [DjangoFilterBackend]  # Use DjangoFilterBackend for filtering
+    filterset_class = TaskFilter  # Use the TaskFilter you defined
 
     def get_object(self):
         room_id = int(self.kwargs.get("room_id"))
@@ -81,11 +87,42 @@ class RoomView(
             return instance
 
         except Room.DoesNotExist:
-            raise Exception("Room does not exists.")
+            raise Exception("Room does not exist.")
 
     def retrieve(self, request, *args, **kwargs):
-        serializer = self.serializer_class(self.get_object(), many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, many=False)
+
+        # Get the filtered tasks using django-filter
+        filtered_tasks = TaskFilter(
+            request.GET, queryset=Task.objects.filter(room=instance)
+        ).qs
+
+        # Paginate the filtered tasks
+        paginator = Paginator(filtered_tasks, self.pagination_class.page_size)
+
+        # Calculate the total number of pages
+        total_pages = paginator.num_pages
+
+        page = self.paginate_queryset(filtered_tasks)
+
+        tasks_serialized = (
+            [TasksListSerializer(task).data for task in page]
+            if page is not None
+            else []
+        )
+
+        response_data = {
+            "room_data": serializer.data,
+            "tasks": tasks_serialized,
+            "total_pages": total_pages,
+        }
+
+        return (
+            self.get_paginated_response(response_data)
+            if page is not None
+            else Response(response_data, status=status.HTTP_200_OK)
+        )
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

@@ -29,7 +29,9 @@ export default function Rooms() {
           setIsLoading(false);
         }
       } catch (error) {
-        console.error(error);
+        error.response.status === 401
+          ? window.location.reload()
+          : console.error(error);
       }
     };
 

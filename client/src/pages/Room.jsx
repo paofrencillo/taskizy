@@ -1,6 +1,8 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
+  Button,
+  IconButton,
   Card,
   CardBody,
   Collapse,
@@ -18,25 +20,32 @@ import { IoFilter } from "react-icons/io5";
 import AddTask from "../components/Room/Tasks/AddTask";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import { IoMdRefresh } from "react-icons/io";
-import { BsPeople } from "react-icons/bs";
+import { BsPeople, BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
+import TaskServices from "../services/TaskServices";
+import { API_ROOM_URL } from "../config/apiUrls";
 
 export default function Room() {
-  const params = useParams();
   const user = useOutletContext();
+  const [active, setActive] = useState(1);
+  const [paginationCount, setPaginationCount] = useState(0);
+  const [nextURL, setNextURL] = useState(null);
+  const [prevURL, setPrevURL] = useState(null);
   const [roomData, setRoomData] = useState([]);
-  const [tasksFiltered, setTasksFiltered] = useState([]);
+  const [roomTasks, setRoomTasks] = useState([]);
   const [filterBy, setFilterBy] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [openMembersDrawer, setOpenMembersDrawer] = useState(false);
   const toggleOpenMembersDrawer = () => setOpenMembersDrawer((cur) => !cur);
+  const params = useParams();
+  const roomURL = `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`;
 
-  const menuValues = [
-    "All",
-    "Completed",
-    "Not Completed",
-    "Assigned to me",
-    "Assigned by me",
-  ];
+  const menuValues = Object.entries({
+    0: "All",
+    1: "Completed",
+    2: "Not Completed",
+    3: "Assigned to me",
+    4: "Assigned by me",
+  });
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 960) {
@@ -50,8 +59,11 @@ export default function Room() {
       try {
         const response = await RoomServices.getRoomData(params);
         if (response.status === 200) {
-          setRoomData(response.data);
-          setTasksFiltered(response.data.tasks);
+          setRoomData(response.data.results.room_data);
+          setRoomTasks(response.data.results.tasks);
+          setPaginationCount(response.data.results.total_pages);
+          setNextURL(response.data.next);
+          setPrevURL(response.data.previous);
           setIsLoading(false);
         }
       } catch (error) {
@@ -63,43 +75,118 @@ export default function Room() {
     document.title = `Taskizy | ${
       roomData.length === 0 ? "" : roomData.room_name
     } Room`;
-
-    // const pollInterval = setInterval(fetchRoomData, 5000); // Poll every 5 seconds
-
-    // return () => {
-    //   clearInterval(pollInterval); // Clear the interval when the component unmounts
-    // };
   }, [params, roomData.length, roomData.room_name]);
+
+  // Create an array with values from 1 to paginationCount
+  const pages = Array.from(
+    { length: paginationCount },
+    (_, index) => index + 1
+  );
+
+  // Set properties for the pagination pages
+  const getItemProps = (index) => ({
+    variant: active === index ? "filled" : "text",
+    color: "purple",
+    onClick: () => {
+      setActive(index);
+      getRoomPage(index);
+    },
+    className: "rounded-full",
+  });
+
+  // Handle the setting of data after the Next or Prev button was clicked
+  const setData = (response) => {
+    setNextURL(response.data.next);
+    setPrevURL(response.data.previous);
+    setRoomTasks(response.data.results.tasks);
+  };
+
+  // Handle the fetching of data after the page number was clicked
+  const getRoomPage = (page) => {
+    setActive(page);
+
+    const fetchTasks = async () => {
+      try {
+        const response = await TaskServices.getRoomTasksPage(
+          `${roomURL}?page=${page}`
+        );
+        setData(response);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchTasks();
+  };
+
+  // Handle the next button function
+  const next = () => {
+    if (active === paginationCount) return;
+
+    setActive(active + 1);
+
+    const fetchTasks = async () => {
+      try {
+        const response = await TaskServices.getRoomTasksPage(nextURL);
+        setData(response);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchTasks();
+  };
+
+  // Handle the prev button function
+  const prev = () => {
+    if (active === 1) return;
+
+    setActive(active - 1);
+
+    const fetchTasks = async () => {
+      try {
+        const response = await TaskServices.getRoomTasksPage(prevURL);
+        setData(response);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchTasks();
+  };
 
   // Define the handleFilterChange function to update tasksFiltered state
   const handleFilterChange = (e) => {
-    const filterValue = e.target.innerText;
-    setFilterBy(filterValue); // Set the filterBy state to display in the UI
+    const filterValue = e.target
+      .closest("button")
+      .getAttribute("data-filter-by");
+
+    setFilterBy(menuValues[filterValue][0]);
+
     // Filter the tasks based on the selected filterValue
-
     switch (filterValue) {
-      case "All":
-        setTasksFiltered(roomData.tasks);
+      case "0":
+        setRoomTasks(roomData.tasks);
         break;
 
-      case "Completed":
-        setTasksFiltered(roomData.tasks.filter((task) => task.is_completed));
+      case "1":
+        setRoomTasks(roomData.tasks.filter((task) => task.is_completed));
         break;
 
-      case "Not Completed":
-        setTasksFiltered(roomData.tasks.filter((task) => !task.is_completed));
+      case "2":
+        setRoomTasks(roomData.tasks.filter((task) => !task.is_completed));
         break;
 
-      case "Assigned to me":
-        setTasksFiltered(
+      case "3":
+        setRoomTasks(
           roomData.tasks.filter(
             (task) => task.tasker !== null && task.tasker.id === user.userID
           )
         );
         break;
 
-      case "Assigned by me":
-        setTasksFiltered(
+      case "4":
+        setRoomTasks(
           roomData.tasks.filter(
             (task) => task.creator !== null && task.creator.id === user.userID
           )
@@ -138,7 +225,7 @@ export default function Room() {
                       color="gray"
                       className="hidden sm:inline-block"
                     >
-                      Total Tasks: {roomData.tasks ? roomData.tasks.length : 0}
+                      Total Tasks: {roomData ? roomData.task_count : 0}
                     </Typography>
 
                     <IoMdRefresh
@@ -199,13 +286,14 @@ export default function Room() {
                         </button>
                       </MenuHandler>
                       <MenuList>
-                        {menuValues.map((value, index) => {
+                        {menuValues.map(([key, value]) => {
                           return (
                             <MenuItem
-                              key={index}
+                              key={key}
                               name="filter-by"
                               className="p-2"
                               onClick={handleFilterChange}
+                              data-filter-by={key}
                             >
                               <Typography variant="small" color="gray">
                                 {value}
@@ -218,10 +306,45 @@ export default function Room() {
                   </div>
                 </Card>
                 <TaskContainer
-                  tasks={tasksFiltered}
+                  tasks={roomTasks}
                   user={user}
                   roomAdmin={roomData.room_admin}
                 />
+                <div className="flex justify-center items-center shadow-lg rounded-lg bg-white mt-4 gap-4 py-2 px-4">
+                  <Button
+                    variant="text"
+                    className="flex items-center gap-2 rounded-full"
+                    onClick={prev}
+                    disabled={active === 1}
+                  >
+                    <BsArrowLeftShort
+                      color="purple"
+                      strokeWidth={2}
+                      className="h-4 w-4"
+                    />
+                    Previous
+                  </Button>
+                  <div className="flex items-center gap-2">
+                    {pages.map((page) => (
+                      <IconButton key={page} {...getItemProps(page)}>
+                        {page}
+                      </IconButton>
+                    ))}
+                  </div>
+                  <Button
+                    variant="text"
+                    className="flex items-center gap-2 rounded-full"
+                    onClick={next}
+                    disabled={active === paginationCount}
+                  >
+                    Next
+                    <BsArrowRightShort
+                      color="purple"
+                      strokeWidth={2}
+                      className="h-4 w-4"
+                    />
+                  </Button>
+                </div>
               </div>
 
               {/*  */}

@@ -130,7 +130,7 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
           {/*  */}
           {/* Task Container */}
           {/*  */}
-          <div className="flex flex-wrap justify-center items-center gap-4 w-full h-fit shadow-lg p-6 rounded-xl">
+          <div className="flex flex-wrap justify-center items-center gap-10 w-full h-fit shadow-lg p-6 rounded-xl">
             {isLoading === true && tasks.length === 0 ? (
               "Loading..."
             ) : tasks.length !== 0 ? (
@@ -139,7 +139,10 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                   // ---------
                   // Task Card
                   // ---------
-                  <Card key={task.task_id} className="w-72 lg:w-96 h-64">
+                  <Card
+                    key={task.task_id}
+                    className="border hover:-translate-y-1 hover:shadow-purple-100 w-72 sm:w-80 md:w-96 h-64"
+                  >
                     <CardBody className="flex flex-col gap-2 p-4 h-full">
                       <div className="flex justify-between items-center gap-2 w-full">
                         <div className="flex justify-between items-center gap-2">

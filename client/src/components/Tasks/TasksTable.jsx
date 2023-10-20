@@ -121,7 +121,6 @@ export default function TasksTable({ tasksData, user }) {
         </div>
       ) : (
         <>
-          {" "}
           <ToastContainer />
           {/*  */}
           {/* Delete Task Modal */}
@@ -156,7 +155,7 @@ export default function TasksTable({ tasksData, user }) {
           {/*  */}
           {/* Tasks Table */}
           {/*  */}
-          <div className="max-h-[700px] my-4">
+          <div className="my-4">
             <table className="w-full text-left text-sm font-light text-gray-700 bg-gray-100">
               <thead className="border-b font-medium shadow-md  text-gray-800 bg-gray-200">
                 <tr>
@@ -186,7 +185,7 @@ export default function TasksTable({ tasksData, user }) {
                       data-task-id={task.task_id}
                       className="border-b transition delay-75 duration-200 ease-in-out hover:bg-purple-50"
                     >
-                      <td className="min-w-[200px] max-w-[400px] whitespace-normal px-4 py-2 font-medium">
+                      <td className="min-w-[200px] max-w-[400px] whitespace-normal p-6 font-medium">
                         {task.description}
                       </td>
                       <td className="whitespace-nowrap px-4 py-2">

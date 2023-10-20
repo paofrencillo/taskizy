@@ -13,6 +13,9 @@ class User(AbstractUser, PermissionsMixin):
     first_name = models.CharField(_("First Name"), max_length=100)
     last_name = models.CharField(_("Last Name"), max_length=100)
     email = models.EmailField(_("Email Address"), max_length=254, unique=True)
+    role = models.CharField(
+        _("Role"), max_length=50, default="Member", blank=True, null=True
+    )
     user_image = models.ImageField(
         _("User Image"), upload_to=upload_to, blank=True, null=True
     )

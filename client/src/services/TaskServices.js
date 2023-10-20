@@ -15,6 +15,19 @@ const getUserTasks = (userID) => {
   }
 };
 
+const getRoomTasksPage = (url) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.get(url, {
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const createTask = (taskFormData, roomID) => {
   try {
     const accessToken = TokenServices.getToken().access;
@@ -27,7 +40,7 @@ const createTask = (taskFormData, roomID) => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.")
+      alert("Your session was expired.");
       TokenServices.destroyToken();
       window.location.replace("/");
     }
@@ -50,7 +63,7 @@ const markAsDoneTask = (roomID, taskID) => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.")
+      alert("Your session was expired.");
       TokenServices.destroyToken();
       window.location.replace("/");
     }
@@ -69,7 +82,7 @@ const deleteTask = (taskID, roomID) => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.")
+      alert("Your session was expired.");
       TokenServices.destroyToken();
       window.location.replace("/");
     }
@@ -78,6 +91,7 @@ const deleteTask = (taskID, roomID) => {
 
 const TaskServices = {
   getUserTasks,
+  getRoomTasksPage,
   createTask,
   markAsDoneTask,
   deleteTask,

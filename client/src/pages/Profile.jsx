@@ -177,6 +177,7 @@ export default function Profile() {
                       id="first_name"
                       color="purple"
                       label="First Name"
+                      maxLength={100}
                       value={userData.first_name}
                       readOnly={!isEditing}
                       onChange={handleInputChange}
@@ -187,6 +188,7 @@ export default function Profile() {
                       id="last_name"
                       color="purple"
                       label="Last Name"
+                      maxLength={100}
                       value={userData.last_name}
                       readOnly={!isEditing}
                       onChange={handleInputChange}
@@ -207,7 +209,8 @@ export default function Profile() {
                       id="role"
                       color="purple"
                       label="Role"
-                      value="Ano ba role ko"
+                      value={userData.role}
+                      maxLength={50}
                       readOnly={!isEditing}
                       onChange={handleInputChange}
                       required

@@ -54,6 +54,3 @@ class Task(models.Model):
         null=True,
         blank=False,
     )
-
-    class Meta:
-        ordering = ("is_completed",)

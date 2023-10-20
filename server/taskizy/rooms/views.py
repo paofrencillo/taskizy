@@ -95,7 +95,8 @@ class RoomView(RetrieveUpdateDestroyAPIView):
 
         # Get the filtered tasks using django-filter
         filtered_tasks = TaskFilter(
-            request.GET, queryset=Task.objects.filter(room=instance)
+            request.GET,
+            queryset=Task.objects.filter(room=instance).order_by("-task_id"),
         ).qs
 
         # Paginate the filtered tasks
@@ -240,7 +241,9 @@ class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
         member_id = int(self.kwargs.get("member_id"))
 
         try:
-            queryset = self.get_queryset().filter(room=room_id, room_member=member_id)
+            queryset = (
+                self.get_queryset().filter(room=room_id).filter(room_member=member_id)
+            )
             instance = queryset.get()
             return instance
 
@@ -259,13 +262,17 @@ class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
             instance = self.get_object()
 
             # Update the tasker to None
-            update_tasker = Task.objects.filter(tasker=instance.room_member).update(
-                tasker=None
+            update_tasker = (
+                Task.objects.filter(tasker=instance.room_member)
+                .filter(room=instance.room)
+                .update(tasker=None)
             )
 
             # Update the creator to None
-            update_creator = Task.objects.filter(creator=instance.room_member).update(
-                creator=None
+            creator = (
+                Task.objects.filter(creator=instance.room_member)
+                .filter(room=instance.room)
+                .update(creator=None)
             )
 
             # Delete instance and return a 204 response

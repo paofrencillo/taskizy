@@ -11,6 +11,7 @@ import RoomCard from "../components/Rooms/RoomCard";
 import AddRoomBtn from "../components/Rooms/AddRoomBtn";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import { useOutletContext } from "react-router-dom";
+import TokenServices from "../services/tokenServices";
 
 export default function Rooms() {
   const [rooms, setRooms] = useState([]);
@@ -29,9 +30,13 @@ export default function Rooms() {
           setIsLoading(false);
         }
       } catch (error) {
-        error.response.status === 401
-          ? window.location.reload()
-          : console.error(error);
+        console.error(error);
+        if (error.response.status === 401) {
+          const response = TokenServices.refreshTokens()
+          console.log(response.status)
+        }
+          
+          
       }
     };
 

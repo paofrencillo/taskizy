@@ -23,29 +23,31 @@ import { IoMdRefresh } from "react-icons/io";
 import { BsPeople, BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import TaskServices from "../services/TaskServices";
 import { API_ROOM_URL } from "../config/apiUrls";
+import { toast } from "react-toastify";
 
 export default function Room() {
   const user = useOutletContext();
   const [active, setActive] = useState(1);
-  const [paginationCount, setPaginationCount] = useState(0);
   const [nextURL, setNextURL] = useState(null);
   const [prevURL, setPrevURL] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [tasksCount, setTasksCount] = useState(0);
+  const [filterBy, setFilterBy] = useState(0);
   const [roomData, setRoomData] = useState([]);
   const [roomTasks, setRoomTasks] = useState([]);
-  const [filterBy, setFilterBy] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [openMembersDrawer, setOpenMembersDrawer] = useState(false);
   const toggleOpenMembersDrawer = () => setOpenMembersDrawer((cur) => !cur);
   const params = useParams();
   const roomURL = `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`;
 
-  const menuValues = Object.entries({
-    0: "All",
-    1: "Completed",
-    2: "Not Completed",
-    3: "Assigned to me",
-    4: "Assigned by me",
-  });
+  const filterValues = [
+    "All",
+    "Completed",
+    "Not Completed",
+    "Assigned to me",
+    "Assigned by me",
+  ];
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 960) {
@@ -59,15 +61,19 @@ export default function Room() {
       try {
         const response = await RoomServices.getRoomData(params);
         if (response.status === 200) {
+          setTasksCount(response.data.count);
           setRoomData(response.data.results.room_data);
           setRoomTasks(response.data.results.tasks);
-          setPaginationCount(response.data.results.total_pages);
+          setTotalPages(response.data.results.total_pages);
           setNextURL(response.data.next);
           setPrevURL(response.data.previous);
           setIsLoading(false);
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
       }
     };
 
@@ -78,10 +84,7 @@ export default function Room() {
   }, [params, roomData.length, roomData.room_name]);
 
   // Create an array with values from 1 to paginationCount
-  const pages = Array.from(
-    { length: paginationCount },
-    (_, index) => index + 1
-  );
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   // Set properties for the pagination pages
   const getItemProps = (index) => ({
@@ -92,13 +95,16 @@ export default function Room() {
       getRoomPage(index);
     },
     className: "rounded-full",
+    disabled: active === index ? true : false,
   });
 
   // Handle the setting of data after the Next or Prev button was clicked
   const setData = (response) => {
+    setTasksCount(response.data.count);
     setNextURL(response.data.next);
     setPrevURL(response.data.previous);
     setRoomTasks(response.data.results.tasks);
+    setTotalPages(response.data.results.total_pages);
   };
 
   // Handle the fetching of data after the page number was clicked
@@ -107,12 +113,48 @@ export default function Room() {
 
     const fetchTasks = async () => {
       try {
-        const response = await TaskServices.getRoomTasksPage(
-          `${roomURL}?page=${page}`
-        );
-        setData(response);
+        switch (parseInt(filterBy)) {
+          case 0: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?all&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 1: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?is_completed=True&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 2: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?is_completed=False&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 3: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?tasker_id=${user.userID}&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 4: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?creator_id=${user.userID}&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+        }
       } catch (err) {
         console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
       }
     };
 
@@ -121,7 +163,7 @@ export default function Room() {
 
   // Handle the next button function
   const next = () => {
-    if (active === paginationCount) return;
+    if (active === totalPages) return;
 
     setActive(active + 1);
 
@@ -131,6 +173,9 @@ export default function Room() {
         setData(response);
       } catch (err) {
         console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
       }
     };
 
@@ -149,6 +194,9 @@ export default function Room() {
         setData(response);
       } catch (err) {
         console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
       }
     };
 
@@ -156,41 +204,91 @@ export default function Room() {
   };
 
   // Define the handleFilterChange function to update tasksFiltered state
-  const handleFilterChange = (e) => {
-    const filterValue = e.target
+  const handleFilterChange = async (e) => {
+    const filterIndex = e.target
       .closest("button")
       .getAttribute("data-filter-by");
 
-    setFilterBy(menuValues[filterValue][0]);
+    console.log(filterIndex);
+
+    setFilterBy(filterIndex);
+    setActive(1);
 
     // Filter the tasks based on the selected filterValue
-    switch (filterValue) {
-      case "0":
-        setRoomTasks(roomData.tasks);
+    switch (parseInt(filterIndex)) {
+      case 0:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?all`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "1":
-        setRoomTasks(roomData.tasks.filter((task) => task.is_completed));
+      case 1:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?is_completed=True`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "2":
-        setRoomTasks(roomData.tasks.filter((task) => !task.is_completed));
+      case 2:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?is_completed=False`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "3":
-        setRoomTasks(
-          roomData.tasks.filter(
-            (task) => task.tasker !== null && task.tasker.id === user.userID
-          )
-        );
+      case 3:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?tasker_id=${user.userID}`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "4":
-        setRoomTasks(
-          roomData.tasks.filter(
-            (task) => task.creator !== null && task.creator.id === user.userID
-          )
-        );
+      case 4:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?creator_id=${user.userID}`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
       default:
@@ -225,7 +323,7 @@ export default function Room() {
                       color="gray"
                       className="hidden sm:inline-block"
                     >
-                      Total Tasks: {roomData ? roomData.task_count : 0}
+                      Tasks Count: {tasksCount}
                     </Typography>
 
                     <IoMdRefresh
@@ -281,19 +379,20 @@ export default function Room() {
                             variant="small"
                             className="hidden sm:inline-block"
                           >
-                            Filter{filterBy ? `: ${filterBy}` : null}
+                            Filter
+                            {filterBy ? `: ${filterValues[filterBy]}` : null}
                           </Typography>
                         </button>
                       </MenuHandler>
                       <MenuList>
-                        {menuValues.map(([key, value]) => {
+                        {filterValues.map((value, index) => {
                           return (
                             <MenuItem
-                              key={key}
+                              key={index}
                               name="filter-by"
                               className="p-2"
                               onClick={handleFilterChange}
-                              data-filter-by={key}
+                              data-filter-by={index}
                             >
                               <Typography variant="small" color="gray">
                                 {value}
@@ -335,7 +434,7 @@ export default function Room() {
                     variant="text"
                     className="flex items-center gap-2 rounded-full"
                     onClick={next}
-                    disabled={active === paginationCount}
+                    disabled={active === totalPages}
                   >
                     Next
                     <BsArrowRightShort

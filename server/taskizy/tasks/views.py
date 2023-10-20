@@ -2,9 +2,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import Paginator
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import get_user_model
 from .models import Task
 from .serializers import TasksListSerializer, TaskCreateSerializer
+from .filters import TaskFilter
 
 
 User = get_user_model()
@@ -57,6 +61,9 @@ class UserTasksListCreateView(ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TasksListSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend]  # Use DjangoFilterBackend for filtering
+    filterset_class = TaskFilter  # Use the TaskFilter you defined
 
     def list(self, request, *args, **kwargs):
         try:
@@ -67,9 +74,38 @@ class UserTasksListCreateView(ListCreateAPIView):
             if user != userID_from_url:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-            queryset = self.get_queryset().filter(tasker=User.objects.get(pk=user))
-            serializer = self.serializer_class(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            # Get the filtered tasks using django-filter
+            filtered_tasks = TaskFilter(
+                request.GET,
+                queryset=self.get_queryset()
+                .filter(tasker=User.objects.get(pk=user))
+                .order_by("-task_id"),
+            ).qs
+
+            # Paginate the filtered tasks
+            paginator = Paginator(filtered_tasks, self.pagination_class.page_size)
+
+            # Calculate the total number of pages
+            total_pages = paginator.num_pages
+
+            page = self.paginate_queryset(filtered_tasks)
+
+            tasks_serialized = (
+                [TasksListSerializer(task).data for task in page]
+                if page is not None
+                else []
+            )
+
+            response_data = {
+                "tasks": tasks_serialized,
+                "total_pages": total_pages,
+            }
+
+            return (
+                self.get_paginated_response(response_data)
+                if page is not None
+                else Response(response_data, status=status.HTTP_200_OK)
+            )
 
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

@@ -26,24 +26,47 @@ export default function RoomCard({ roomData, user }) {
           break;
         case 1:
           setFirstMember(membersList[0]);
-          setRoomMembers(`${firstMember} was here`);
+          if (membersList[0] === user.first_name) {
+            setRoomMembers("You are here.");
+          } else {
+            setRoomMembers(`${firstMember} was here`);
+          }
+
           break;
         case 2:
           setFirstMember(membersList[0]);
           setSecondMember(membersList[1]);
-          setRoomMembers(`${firstMember} and ${secondMember} were here`);
+          if (membersList[0] === user.first_name) {
+            setRoomMembers(`You and ${secondMember} were here`);
+          } else if (membersList[1] === user.first_name) {
+            setRoomMembers(`${firstMember} and You were here`);
+          } else {
+            setRoomMembers(`${firstMember} and ${secondMember} were here`);
+          }
+
           break;
         default:
           setFirstMember(membersList[0]);
           setSecondMember(membersList[1]);
           setCountOtherMember(membersList.length - 2);
-          setRoomMembers(
-            `${firstMember}, ${secondMember} and ${countOtherMember} others were here`
-          );
+
+          if (membersList[0] === user.first_name) {
+            setRoomMembers(
+              `You, ${secondMember} and ${countOtherMember} others were here`
+            );
+          } else if (membersList[1] === user.first_name) {
+            setRoomMembers(
+              `${firstMember}, You and ${countOtherMember} others were here`
+            );
+          } else {
+            setRoomMembers(
+              `${firstMember}, ${secondMember} and ${countOtherMember} others were here`
+            );
+          }
       }
     };
     getMembers();
-  }, [roomData, firstMember, secondMember, countOtherMember]);
+  }, [roomData, user.first_name, firstMember, secondMember, countOtherMember]);
 
   return (
     <div className="w-[325px] shadow-md hover:shadow-purple-100 hover:-translate-y-1 rounded-md transition delay-75 duration-150 ease-in-out">

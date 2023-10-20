@@ -64,7 +64,7 @@ class RoomsListSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     room_admin = UserSerializer(read_only=True)
     room_members = serializers.SerializerMethodField()
-    tasks = serializers.SerializerMethodField()
+    task_count = serializers.SerializerMethodField()
     task_completed_perc = serializers.SerializerMethodField()
 
     class Meta:
@@ -73,7 +73,7 @@ class RoomSerializer(serializers.ModelSerializer):
             "room_name",
             "room_admin",
             "room_members",
-            "tasks",
+            "task_count",
             "task_completed_perc",
         ]
 
@@ -108,11 +108,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
         return member_serialized
 
-    def get_tasks(self, obj):
-        tasks = Task.objects.filter(room=obj)
-        tasks_serialized = [TasksListSerializer(task).data for task in tasks]
-
-        return tasks_serialized
+    def get_task_count(self, obj):
+        return Task.objects.filter(room=obj).count()
 
     def get_task_completed_perc(self, obj):
         try:

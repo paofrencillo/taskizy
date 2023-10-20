@@ -50,7 +50,7 @@ export default function Tasks() {
             </div>
           ) : (
             <>
-              <Typography variant="h4" className="mt-4 w-full text-center">
+              <Typography variant="h4" className="mt-8 w-full text-center">
                 My Tasks
               </Typography>
               <div className="inline-block w-full">

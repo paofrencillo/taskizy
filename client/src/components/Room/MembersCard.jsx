@@ -316,6 +316,8 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
                     >
                       {member.first_name} {member.last_name}{" "}
                       {member.first_name === user.first_name ? "(Me)" : null}
+                      <br />
+                      <small>{member.role}</small>
                     </Typography>
                   </div>
                   <div className="flex justify-end items-center gap-2">

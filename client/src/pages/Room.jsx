@@ -1,6 +1,8 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
+  Button,
+  IconButton,
   Card,
   CardBody,
   Collapse,
@@ -18,19 +20,28 @@ import { IoFilter } from "react-icons/io5";
 import AddTask from "../components/Room/Tasks/AddTask";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import { IoMdRefresh } from "react-icons/io";
-import { BsPeople } from "react-icons/bs";
+import { BsPeople, BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
+import TaskServices from "../services/TaskServices";
+import { API_ROOM_URL } from "../config/apiUrls";
+import { toast } from "react-toastify";
 
 export default function Room() {
-  const params = useParams();
   const user = useOutletContext();
+  const [active, setActive] = useState(1);
+  const [nextURL, setNextURL] = useState(null);
+  const [prevURL, setPrevURL] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [tasksCount, setTasksCount] = useState(0);
+  const [filterBy, setFilterBy] = useState(0);
   const [roomData, setRoomData] = useState([]);
-  const [tasksFiltered, setTasksFiltered] = useState([]);
-  const [filterBy, setFilterBy] = useState("");
+  const [roomTasks, setRoomTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [openMembersDrawer, setOpenMembersDrawer] = useState(false);
   const toggleOpenMembersDrawer = () => setOpenMembersDrawer((cur) => !cur);
+  const params = useParams();
+  const roomURL = `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`;
 
-  const menuValues = [
+  const filterValues = [
     "All",
     "Completed",
     "Not Completed",
@@ -50,12 +61,19 @@ export default function Room() {
       try {
         const response = await RoomServices.getRoomData(params);
         if (response.status === 200) {
-          setRoomData(response.data);
-          setTasksFiltered(response.data.tasks);
+          setTasksCount(response.data.count);
+          setRoomData(response.data.results.room_data);
+          setRoomTasks(response.data.results.tasks);
+          setTotalPages(response.data.results.total_pages);
+          setNextURL(response.data.next);
+          setPrevURL(response.data.previous);
           setIsLoading(false);
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
       }
     };
 
@@ -63,47 +81,214 @@ export default function Room() {
     document.title = `Taskizy | ${
       roomData.length === 0 ? "" : roomData.room_name
     } Room`;
-
-    // const pollInterval = setInterval(fetchRoomData, 5000); // Poll every 5 seconds
-
-    // return () => {
-    //   clearInterval(pollInterval); // Clear the interval when the component unmounts
-    // };
   }, [params, roomData.length, roomData.room_name]);
 
+  // Create an array with values from 1 to paginationCount
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  // Set properties for the pagination pages
+  const getItemProps = (index) => ({
+    variant: active === index ? "filled" : "text",
+    color: "purple",
+    onClick: () => {
+      setActive(index);
+      getRoomPage(index);
+    },
+    className: "rounded-full",
+    disabled: active === index ? true : false,
+  });
+
+  // Handle the setting of data after the Next or Prev button was clicked
+  const setData = (response) => {
+    setTasksCount(response.data.count);
+    setNextURL(response.data.next);
+    setPrevURL(response.data.previous);
+    setRoomTasks(response.data.results.tasks);
+    setTotalPages(response.data.results.total_pages);
+  };
+
+  // Handle the fetching of data after the page number was clicked
+  const getRoomPage = (page) => {
+    setActive(page);
+
+    const fetchTasks = async () => {
+      try {
+        switch (parseInt(filterBy)) {
+          case 0: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?all&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 1: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?is_completed=True&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 2: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?is_completed=False&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 3: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?tasker_id=${user.userID}&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+          case 4: {
+            const response = await TaskServices.getRoomTasksPage(
+              `${roomURL}?creator_id=${user.userID}&page=${page}`
+            );
+            setData(response);
+            break;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
+    };
+
+    fetchTasks();
+  };
+
+  // Handle the next button function
+  const next = () => {
+    if (active === totalPages) return;
+
+    setActive(active + 1);
+
+    const fetchTasks = async () => {
+      try {
+        const response = await TaskServices.getRoomTasksPage(nextURL);
+        setData(response);
+      } catch (err) {
+        console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
+    };
+
+    fetchTasks();
+  };
+
+  // Handle the prev button function
+  const prev = () => {
+    if (active === 1) return;
+
+    setActive(active - 1);
+
+    const fetchTasks = async () => {
+      try {
+        const response = await TaskServices.getRoomTasksPage(prevURL);
+        setData(response);
+      } catch (err) {
+        console.error(err);
+        toast.error("Something is wrong. Try to refresh the page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
+    };
+
+    fetchTasks();
+  };
+
   // Define the handleFilterChange function to update tasksFiltered state
-  const handleFilterChange = (e) => {
-    const filterValue = e.target.innerText;
-    setFilterBy(filterValue); // Set the filterBy state to display in the UI
+  const handleFilterChange = async (e) => {
+    const filterIndex = e.target
+      .closest("button")
+      .getAttribute("data-filter-by");
+
+    console.log(filterIndex);
+
+    setFilterBy(filterIndex);
+    setActive(1);
+
     // Filter the tasks based on the selected filterValue
+    switch (parseInt(filterIndex)) {
+      case 0:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?all`
+          );
 
-    switch (filterValue) {
-      case "All":
-        setTasksFiltered(roomData.tasks);
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "Completed":
-        setTasksFiltered(roomData.tasks.filter((task) => task.is_completed));
+      case 1:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?is_completed=True`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "Not Completed":
-        setTasksFiltered(roomData.tasks.filter((task) => !task.is_completed));
+      case 2:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?is_completed=False`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "Assigned to me":
-        setTasksFiltered(
-          roomData.tasks.filter(
-            (task) => task.tasker !== null && task.tasker.id === user.userID
-          )
-        );
+      case 3:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?tasker_id=${user.userID}`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
-      case "Assigned by me":
-        setTasksFiltered(
-          roomData.tasks.filter(
-            (task) => task.creator !== null && task.creator.id === user.userID
-          )
-        );
+      case 4:
+        try {
+          const response = await TaskServices.getRoomTasksPage(
+            `${roomURL}?creator_id=${user.userID}`
+          );
+
+          setData(response);
+        } catch (err) {
+          console.error(err);
+          toast.error("Something is wrong. Try to refresh the page.", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
         break;
 
       default:
@@ -138,7 +323,7 @@ export default function Room() {
                       color="gray"
                       className="hidden sm:inline-block"
                     >
-                      Total Tasks: {roomData.tasks ? roomData.tasks.length : 0}
+                      Tasks Count: {tasksCount}
                     </Typography>
 
                     <IoMdRefresh
@@ -194,18 +379,20 @@ export default function Room() {
                             variant="small"
                             className="hidden sm:inline-block"
                           >
-                            Filter{filterBy ? `: ${filterBy}` : null}
+                            Filter
+                            {filterBy ? `: ${filterValues[filterBy]}` : null}
                           </Typography>
                         </button>
                       </MenuHandler>
                       <MenuList>
-                        {menuValues.map((value, index) => {
+                        {filterValues.map((value, index) => {
                           return (
                             <MenuItem
                               key={index}
                               name="filter-by"
                               className="p-2"
                               onClick={handleFilterChange}
+                              data-filter-by={index}
                             >
                               <Typography variant="small" color="gray">
                                 {value}
@@ -218,10 +405,45 @@ export default function Room() {
                   </div>
                 </Card>
                 <TaskContainer
-                  tasks={tasksFiltered}
+                  tasks={roomTasks}
                   user={user}
                   roomAdmin={roomData.room_admin}
                 />
+                <div className="flex justify-center items-center shadow-lg rounded-lg bg-white mt-4 gap-4 py-2 px-4">
+                  <Button
+                    variant="text"
+                    className="flex items-center gap-2 rounded-full"
+                    onClick={prev}
+                    disabled={active === 1}
+                  >
+                    <BsArrowLeftShort
+                      color="purple"
+                      strokeWidth={2}
+                      className="h-4 w-4"
+                    />
+                    Previous
+                  </Button>
+                  <div className="flex items-center gap-2">
+                    {pages.map((page) => (
+                      <IconButton key={page} {...getItemProps(page)}>
+                        {page}
+                      </IconButton>
+                    ))}
+                  </div>
+                  <Button
+                    variant="text"
+                    className="flex items-center gap-2 rounded-full"
+                    onClick={next}
+                    disabled={active === totalPages}
+                  >
+                    Next
+                    <BsArrowRightShort
+                      color="purple"
+                      strokeWidth={2}
+                      className="h-4 w-4"
+                    />
+                  </Button>
+                </div>
               </div>
 
               {/*  */}

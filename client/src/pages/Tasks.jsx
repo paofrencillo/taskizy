@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { BsArrowRightShort, BsArrowLeftShort } from "react-icons/bs";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import TaskServices from "../services/TaskServices";
@@ -119,7 +119,6 @@ export default function Tasks() {
 
   return (
     <>
-      <ToastContainer />
       {isLoading ? (
         <div className="w-screen h-screen">
           <MutatingDotsLoader />

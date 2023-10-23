@@ -1,6 +1,6 @@
 import axios from "axios";
 import TokenServices from "./tokenServices";
-import { API_USERS_URL } from "../config/apiUrls";
+import { API_SET_PASSWORD_URL, API_USERS_URL } from "../config/apiUrls";
 
 const getUsers = (roomID) => {
   try {
@@ -76,11 +76,26 @@ const changeUserImage = (userImageData) => {
   }
 };
 
+const changePassword = (formData) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.post(API_SET_PASSWORD_URL, formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const UsersServices = {
   getUsers,
   getUser,
   updateUser,
   changeUserImage,
+  changePassword,
 };
 
 export default UsersServices;

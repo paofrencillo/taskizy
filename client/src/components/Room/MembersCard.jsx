@@ -18,7 +18,7 @@ import {
 } from "@material-tailwind/react";
 import InviteMembers from "./InviteMembers";
 import RoomServices from "../../services/RoomServices";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { RiUserStarLine } from "react-icons/ri";
@@ -122,7 +122,6 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
 
   return (
     <>
-      <ToastContainer />
       {/*  */}
       {/* Kick Member */}
       {/*  */}

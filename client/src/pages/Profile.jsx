@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { TbPhotoEdit } from "react-icons/tb";
 import UsersServices from "../services/UsersServices";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
+import { ChangePassword } from "../components/ChangePassword/ChangePassword";
 
 export default function Profile() {
   const [userData, setUserData] = useState({});
@@ -240,6 +241,7 @@ export default function Profile() {
                     </Button>
                   )}
                 </form>
+                <ChangePassword />
               </CardBody>
             </Card>
           </div>

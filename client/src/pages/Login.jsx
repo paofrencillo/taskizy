@@ -2,7 +2,7 @@ import { MdMail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import { Link, Navigate, redirect } from "react-router-dom";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import AuthServices from "../services/AuthServices";
@@ -52,7 +52,6 @@ export default function Login() {
 
   return (
     <div className="relative h-screen w-screen">
-      <ToastContainer />
       <div className="w-full h-2/3 bg-purple-800"></div>
       <div className="w-full h-1/3 bg-white"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

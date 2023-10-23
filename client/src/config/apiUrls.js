@@ -25,3 +25,5 @@ export const API_ROOM_URL = `${API_BASE_URL}room/`;
 export const API_TASK_URL = `${API_BASE_URL}task/`;
 
 export const API_TASKS_URL = `${API_BASE_URL}tasks/`;
+
+export const API_SET_PASSWORD_URL = `${API_BASE_URL}auth/users/set_password/`;

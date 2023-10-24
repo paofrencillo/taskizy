@@ -23,7 +23,7 @@ import { IoMdRefresh } from "react-icons/io";
 import { BsPeople, BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import TaskServices from "../services/TaskServices";
 import { API_ROOM_URL } from "../config/apiUrls";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Room() {
   const user = useOutletContext();
@@ -71,9 +71,7 @@ export default function Room() {
         }
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Something is wrong. Try to refresh the page.");
       }
     };
 
@@ -152,9 +150,7 @@ export default function Room() {
         }
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Something is wrong. Try to refresh the page.");
       }
     };
 
@@ -173,9 +169,7 @@ export default function Room() {
         setData(response);
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Something is wrong. Try to refresh the page.");
       }
     };
 
@@ -194,9 +188,7 @@ export default function Room() {
         setData(response);
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Something is wrong. Try to refresh the page.");
       }
     };
 
@@ -225,9 +217,7 @@ export default function Room() {
           setData(response);
         } catch (err) {
           console.error(err);
-          toast.error("Something is wrong. Try to refresh the page.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          toast.error("Something is wrong. Try to refresh the page.");
         }
         break;
 
@@ -240,9 +230,7 @@ export default function Room() {
           setData(response);
         } catch (err) {
           console.error(err);
-          toast.error("Something is wrong. Try to refresh the page.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          toast.error("Something is wrong. Try to refresh the page.");
         }
         break;
 
@@ -255,9 +243,7 @@ export default function Room() {
           setData(response);
         } catch (err) {
           console.error(err);
-          toast.error("Something is wrong. Try to refresh the page.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          toast.error("Something is wrong. Try to refresh the page.");
         }
         break;
 
@@ -270,9 +256,7 @@ export default function Room() {
           setData(response);
         } catch (err) {
           console.error(err);
-          toast.error("Something is wrong. Try to refresh the page.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          toast.error("Something is wrong. Try to refresh the page.");
         }
         break;
 
@@ -285,9 +269,7 @@ export default function Room() {
           setData(response);
         } catch (err) {
           console.error(err);
-          toast.error("Something is wrong. Try to refresh the page.", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          toast.error("Something is wrong. Try to refresh the page.");
         }
         break;
 
@@ -298,6 +280,7 @@ export default function Room() {
 
   return (
     <>
+      <ToastContainer position="bottom-right" />
       {isLoading === false ? (
         <div className="pt-16">
           {/*  */}

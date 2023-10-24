@@ -14,7 +14,6 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UsersServices from "../../services/UsersServices";
-import MutatingDotsLoader from "../Loader/MutatingDotsLoader";
 
 function Icon({ id, open }) {
   return (

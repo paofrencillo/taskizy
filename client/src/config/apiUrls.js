@@ -27,3 +27,7 @@ export const API_TASK_URL = `${API_BASE_URL}task/`;
 export const API_TASKS_URL = `${API_BASE_URL}tasks/`;
 
 export const API_SET_PASSWORD_URL = `${API_BASE_URL}auth/users/set_password/`;
+
+export const API_RESET_PASSWORD_URL = `${API_BASE_URL}auth/users/reset_password/`;
+
+export const API_RESET_PASSWORD_CONFIRM_URL = `${API_BASE_URL}auth/users/reset_password_confirm/`;

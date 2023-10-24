@@ -1,25 +1,75 @@
-import { MdMail } from "react-icons/md";
-import { FaKey } from "react-icons/fa";
 import { Link, Navigate, redirect } from "react-router-dom";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Input,
+  Button,
+  Typography,
+  Spinner,
+} from "@material-tailwind/react";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MdMail } from "react-icons/md";
+import { FaKey } from "react-icons/fa";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import AuthServices from "../services/AuthServices";
 import TokenServices from "../services/tokenServices";
+import UsersServices from "../services/UsersServices";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isEmailSendLoading, setIsEmailSendLoading] = useState(false);
+  const [openForgotPassDialog, setOpenForgotPassDialog] = useState(false);
+  const [emailErrors, setEmailErrors] = useState([]);
   const token = TokenServices.getToken().refresh;
 
+  // check if token is already saved in local storage
   if (token) {
     return <Navigate to={"/rooms"} />;
   }
 
-  function handleLoginFormSubmit(e) {
-    e.preventDefault();
+  // Clear the errors whenever the email field was changed
+  const clearErrors = () => {
+    setEmailErrors([]);
+  };
 
+  // Handle the opening of forgot pass dialog
+  const handleOpenForgotPassDialog = () =>
+    setOpenForgotPassDialog(!openForgotPassDialog);
+
+  // Handle the send of email for password reset
+  const handleSendEmail = (e) => {
+    e.preventDefault();
+    setIsEmailSendLoading(true);
+
+    const formData = new FormData(e.target);
+
+    const sendEmail = async () => {
+      try {
+        const response = await UsersServices.forgotPassword(formData);
+
+        if (response.status === 204) {
+          setOpenForgotPassDialog(false);
+          toast.success("Password reset link was sent to your email.");
+        }
+      } catch (err) {
+        console.error(err);
+        setEmailErrors(
+          err.response.data.email ? err.response.data.email : err.response.data
+        );
+      } finally {
+        setIsEmailSendLoading(false);
+      }
+    };
+    sendEmail();
+  };
+
+  // handle the login functionality
+  const handleLoginFormSubmit = (e) => {
+    e.preventDefault();
     const formData = new FormData(e.target);
 
     setIsLoading(true);
@@ -34,13 +84,9 @@ export default function Login() {
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            toast.error("Invalid username or password", {
-              position: toast.POSITION.BOTTOM_RIGHT,
-            });
+            toast.error("Invalid username or password");
           } else {
-            toast.error("Something is wrong. Try to refresh the page.", {
-              position: toast.POSITION.BOTTOM_RIGHT,
-            });
+            toast.error("Something is wrong. Try to refresh the page.");
           }
         })
         .finally(() => {
@@ -48,10 +94,68 @@ export default function Login() {
         });
     };
     getResponse();
-  }
+  };
 
   return (
     <div className="relative h-screen w-screen">
+      <ToastContainer position="bottom-right" />
+      {/*  */}
+      {/* Forgot Password Dialog */}
+      {/*  */}
+
+      <Dialog
+        open={openForgotPassDialog}
+        handler={handleOpenForgotPassDialog}
+        size="xs"
+      >
+        <DialogHeader>Forgot Password</DialogHeader>
+        <form onSubmit={handleSendEmail}>
+          <DialogBody>
+            <Typography variant="small" className="mb-4">
+              Input your registered email address to receive the link on
+              resetting your password.
+            </Typography>
+
+            <Input
+              type="email"
+              color="purple"
+              name="email"
+              label="Email Address"
+              className="w-full"
+              onChange={clearErrors}
+              required
+              disabled={isEmailSendLoading}
+            />
+            <Typography variant="small" color="red" className="mt-1.5">
+              {emailErrors.map((error) => {
+                return error;
+              })}
+            </Typography>
+          </DialogBody>
+          <DialogFooter>
+            {isEmailSendLoading ? (
+              <div className="w-full text-center flex justify-center items-center p-2">
+                <Spinner color="purple" />
+              </div>
+            ) : (
+              <>
+                <Button
+                  type="reset"
+                  variant="text"
+                  color="red"
+                  onClick={handleOpenForgotPassDialog}
+                  className="mr-1"
+                >
+                  <span>Cancel</span>
+                </Button>
+                <Button type="submit" variant="gradient" color="green">
+                  <span>Confirm</span>
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </form>
+      </Dialog>
       <div className="w-full h-2/3 bg-purple-800"></div>
       <div className="w-full h-1/3 bg-white"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -106,9 +210,13 @@ export default function Login() {
             </button>
           </form>
           <div className="flex flex-col justify-center items-center w-full">
-            <Link className="text-gray-400 hover:text-purple-400 text-sm cursor-pointer transition delay-100 duration-200 ease-in-out">
+            <Typography
+              variant="small"
+              className="w-full text-center text-gray-400 hover:text-purple-400 cursor-pointer transition delay-100 duration-200 ease-in-out"
+              onClick={handleOpenForgotPassDialog}
+            >
               Forgot Password?
-            </Link>
+            </Typography>
             <br />
             <Link to={"/register"} className="mt-2 w-full">
               <button className="bg-purple-100 border-2 border-purple-500 py-3 w-full rounded-md  text-purple-500 hover:text-purple-900 hover:bg-purple-300 text-base transition delay-100 duration-200 ease-in-out">

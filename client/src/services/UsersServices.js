@@ -1,6 +1,11 @@
 import axios from "axios";
 import TokenServices from "./tokenServices";
-import { API_SET_PASSWORD_URL, API_USERS_URL } from "../config/apiUrls";
+import {
+  API_RESET_PASSWORD_CONFIRM_URL,
+  API_RESET_PASSWORD_URL,
+  API_SET_PASSWORD_URL,
+  API_USERS_URL,
+} from "../config/apiUrls";
 
 const getUsers = (roomID) => {
   try {
@@ -13,9 +18,7 @@ const getUsers = (roomID) => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.");
-      TokenServices.destroyToken();
-      window.location.replace("/");
+      console.error(err);
     }
   }
 };
@@ -31,9 +34,7 @@ const getUser = () => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.");
-      TokenServices.destroyToken();
-      window.location.replace("/");
+      console.error(err);
     }
   }
 };
@@ -50,9 +51,7 @@ const updateUser = (userFormData) => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.");
-      TokenServices.destroyToken();
-      window.location.replace("/");
+      console.error(err);
     }
   }
 };
@@ -69,9 +68,7 @@ const changeUserImage = (userImageData) => {
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
-      alert("Your session was expired.");
-      TokenServices.destroyToken();
-      window.location.replace("/");
+      console.error(err);
     }
   }
 };
@@ -90,12 +87,34 @@ const changePassword = (formData) => {
   }
 };
 
+const forgotPassword = (email) => {
+  try {
+    return axios.post(API_RESET_PASSWORD_URL, email, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const confirmResetPassword = (formData) => {
+  return axios.post(`${API_RESET_PASSWORD_CONFIRM_URL}`, formData, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+};
+
 const UsersServices = {
   getUsers,
   getUser,
   updateUser,
   changeUserImage,
   changePassword,
+  forgotPassword,
+  confirmResetPassword,
 };
 
 export default UsersServices;

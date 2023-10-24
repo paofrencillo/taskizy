@@ -12,6 +12,7 @@ import Error404 from "./pages/Errors/Error404.jsx";
 import Error500 from "./pages/Errors/Error500.jsx";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
 import Room from "./pages/Room.jsx";
+import ResetPass from "./pages/ResetPass.jsx";
 
 export default function App() {
   return (
@@ -28,6 +29,10 @@ export default function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/activate/:uid/:token/" element={<Activate />} />
+          <Route
+            path="/password-reset/confirm/:uid/:token/"
+            element={<ResetPass />}
+          />
           <Route path="/activate-success" element={<ActivateSuccess />} />
           <Route path="/400" element={<Error400 />} />
           <Route path="/403" element={<Error403 />} />

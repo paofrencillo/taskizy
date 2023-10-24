@@ -88,14 +88,17 @@ class UserTasksListCreateView(ListCreateAPIView):
             # Calculate the total number of pages
             total_pages = paginator.num_pages
 
+            # Query the tasks based on the filter/s
             page = self.paginate_queryset(filtered_tasks)
 
+            # Serialize the tasks
             tasks_serialized = (
                 [TasksListSerializer(task).data for task in page]
                 if page is not None
                 else []
             )
 
+            # Return the response
             response_data = {
                 "tasks": tasks_serialized,
                 "total_pages": total_pages,

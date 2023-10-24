@@ -87,16 +87,12 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
   // Handles the logic for leaving of room member
   const handleLeaveMember = () => {
     if (roomAdmin.id === user.userID) {
-      toast.warn("Room ADMIN can't leave this room.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.warn("Room ADMIN can't leave this room.");
     } else if (roomAdmin.id !== user.userID) {
       setOpenLeaveDialog(true);
     } else {
       console.error("Something is wrong. Try Again or refresh the page.");
-      toast.error("Something is wrong. Try Again or refresh the page.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.error("Something is wrong. Try Again or refresh the page.");
     }
   };
 
@@ -112,9 +108,7 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
       }
     } catch (err) {
       console.error("Internal Server Error. Logout and try to login again.");
-      toast.error("Internal Server Error. Logout and try to login again.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.error("Internal Server Error. Logout and try to login again.");
     } finally {
       setOpenLeaveDialog(false);
     }
@@ -122,7 +116,7 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
       {/*  */}
       {/* Kick Member */}
       {/*  */}

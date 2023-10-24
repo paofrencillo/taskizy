@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { BsArrowRightShort, BsArrowLeftShort } from "react-icons/bs";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import TaskServices from "../services/TaskServices";
@@ -87,9 +88,7 @@ export default function Tasks() {
         setData(response);
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Something is wrong. Try to refresh the page.");
       }
     };
 
@@ -108,9 +107,7 @@ export default function Tasks() {
         setData(response);
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Something is wrong. Try to refresh the page.");
       }
     };
 
@@ -119,7 +116,7 @@ export default function Tasks() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
       {isLoading ? (
         <div className="w-screen h-screen">
           <MutatingDotsLoader />

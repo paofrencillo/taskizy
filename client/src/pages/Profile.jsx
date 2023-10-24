@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { TbPhotoEdit } from "react-icons/tb";
 import UsersServices from "../services/UsersServices";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
+import { ChangePassword } from "../components/ChangePassword/ChangePassword";
 
 export default function Profile() {
   const [userData, setUserData] = useState({});
@@ -173,6 +174,7 @@ export default function Profile() {
                 <form onSubmit={handleUpdateFormSubmit}>
                   <div className="flex flex-col gap-4 mt-8">
                     <Input
+                      type="text"
                       name="first_name"
                       id="first_name"
                       color="purple"
@@ -184,6 +186,7 @@ export default function Profile() {
                       required
                     />
                     <Input
+                      type="text"
                       name="last_name"
                       id="last_name"
                       color="purple"
@@ -195,6 +198,7 @@ export default function Profile() {
                       required
                     />
                     <Input
+                      type="email"
                       name="email"
                       id="email"
                       color="purple"
@@ -205,6 +209,7 @@ export default function Profile() {
                       required
                     />
                     <Input
+                      type="text"
                       name="role"
                       id="role"
                       color="purple"
@@ -240,6 +245,7 @@ export default function Profile() {
                     </Button>
                   )}
                 </form>
+                <ChangePassword />
               </CardBody>
             </Card>
           </div>

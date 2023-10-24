@@ -34,10 +34,7 @@ export default function TasksTable({ tasksData, user }) {
       setTaskID(parseInt(getTaskID));
       setOpenDeleteModal(true);
     } else {
-      toast.error(
-        "Something is wrong. Try Again or refresh the page",
-        toast.POSITION.BOTTOM_RIGHT
-      );
+      toast.error("Something is wrong. Try Again or refresh the page");
     }
   };
 
@@ -50,10 +47,7 @@ export default function TasksTable({ tasksData, user }) {
     if (getTaskID) {
       handleSendTaskDone(parseInt(getTaskID));
     } else {
-      toast.error(
-        "Something is wrong. Try Again or refresh the page",
-        toast.POSITION.BOTTOM_RIGHT
-      );
+      toast.error("Something is wrong. Try Again or refresh the page");
     }
   };
 
@@ -78,7 +72,7 @@ export default function TasksTable({ tasksData, user }) {
         selectedTaskID
       );
       if (response.status === 200) {
-        toast.success("Task was marked done.", toast.POSITION.BOTTOM_RIGHT);
+        toast.success("Task was marked done.");
         setTimeout(() => {
           location.reload();
         }, 1500);
@@ -103,10 +97,7 @@ export default function TasksTable({ tasksData, user }) {
         } else console.error(response.status);
       } catch (err) {
         setOpenDeleteModal(false);
-        toast.error(
-          "Something is wrong. Try Again.",
-          toast.POSITION.BOTTOM_RIGHT
-        );
+        toast.error("Something is wrong. Try Again.");
         console.error(err);
       }
     };
@@ -121,7 +112,7 @@ export default function TasksTable({ tasksData, user }) {
         </div>
       ) : (
         <>
-          <ToastContainer />
+          <ToastContainer position="bottom-right" />
           {/*  */}
           {/* Delete Task Modal */}
           {/*  */}

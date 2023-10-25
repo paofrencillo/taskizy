@@ -70,6 +70,7 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = [
+            "room_id",
             "room_name",
             "room_admin",
             "room_members",

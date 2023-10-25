@@ -71,7 +71,12 @@ export default function Room() {
         }
       } catch (err) {
         console.error(err);
-        toast.error("Something is wrong. Try to refresh the page.");
+
+        if (err.response.status === 404) {
+          toast.error(err.response.data);
+        } else {
+          toast.error("Something is wrong. Try to refresh the page.");
+        }
       }
     };
 
@@ -201,8 +206,6 @@ export default function Room() {
       .closest("button")
       .getAttribute("data-filter-by");
 
-    console.log(filterIndex);
-
     setFilterBy(filterIndex);
     setActive(1);
 
@@ -288,8 +291,11 @@ export default function Room() {
           {/*  */}
           <div className="bg-gray-800">
             <RoomHeader
+              roomID={roomData.room_id}
+              roomSlug={roomData.room_slug}
               roomName={roomData.room_name}
               roomAdmin={roomData.room_admin}
+              user={user}
               task_completed_perc={roomData.task_completed_perc}
             />
           </div>
@@ -392,41 +398,43 @@ export default function Room() {
                   user={user}
                   roomAdmin={roomData.room_admin}
                 />
-                <div className="flex justify-center items-center shadow-lg rounded-lg bg-white mt-4 gap-4 py-2 px-4">
-                  <Button
-                    variant="text"
-                    className="flex items-center gap-2 rounded-full"
-                    onClick={prev}
-                    disabled={active === 1}
-                  >
-                    <BsArrowLeftShort
-                      color="purple"
-                      strokeWidth={2}
-                      className="h-4 w-4"
-                    />
-                    Previous
-                  </Button>
-                  <div className="flex items-center gap-2">
-                    {pages.map((page) => (
-                      <IconButton key={page} {...getItemProps(page)}>
-                        {page}
-                      </IconButton>
-                    ))}
+                {roomTasks.length !== 0 ? (
+                  <div className="flex justify-center items-center shadow-lg rounded-lg bg-white mt-4 gap-4 py-2 px-4">
+                    <Button
+                      variant="text"
+                      className="flex items-center gap-2 rounded-full"
+                      onClick={prev}
+                      disabled={active === 1}
+                    >
+                      <BsArrowLeftShort
+                        color="purple"
+                        strokeWidth={2}
+                        className="h-4 w-4"
+                      />
+                      Previous
+                    </Button>
+                    <div className="flex items-center gap-2">
+                      {pages.map((page) => (
+                        <IconButton key={page} {...getItemProps(page)}>
+                          {page}
+                        </IconButton>
+                      ))}
+                    </div>
+                    <Button
+                      variant="text"
+                      className="flex items-center gap-2 rounded-full"
+                      onClick={next}
+                      disabled={active === totalPages}
+                    >
+                      Next
+                      <BsArrowRightShort
+                        color="purple"
+                        strokeWidth={2}
+                        className="h-4 w-4"
+                      />
+                    </Button>
                   </div>
-                  <Button
-                    variant="text"
-                    className="flex items-center gap-2 rounded-full"
-                    onClick={next}
-                    disabled={active === totalPages}
-                  >
-                    Next
-                    <BsArrowRightShort
-                      color="purple"
-                      strokeWidth={2}
-                      className="h-4 w-4"
-                    />
-                  </Button>
-                </div>
+                ) : null}
               </div>
 
               {/*  */}

@@ -200,6 +200,7 @@ export function ChangePassword() {
       <Accordion
         open={openAccordion === 1}
         icon={<Icon id={1} open={openAccordion} />}
+        className="py-0.5 mt-4"
       >
         <AccordionHeader
           onClick={() => handleOpenAccordion(1)}
@@ -217,9 +218,6 @@ export function ChangePassword() {
             fullWidth
           >
             Change Password
-          </Button>
-          <Button variant="filled" color="red" size="sm" fullWidth>
-            Delete Account
           </Button>
         </AccordionBody>
       </Accordion>

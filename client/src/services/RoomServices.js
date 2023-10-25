@@ -131,7 +131,7 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
   try {
     const accessToken = TokenServices.getToken().access;
     return axios.patch(
-      `${API_ROOM_URL}room${roomID}/room${roomSlug}/assign_as_admin/`,
+      `${API_ROOM_URL}room${roomID}/${roomSlug}/assign_as_admin/`,
       { room_admin: memberID },
       {
         headers: {
@@ -150,6 +150,25 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
   }
 };
 
+const deleteRoom = (roomID, roomSlug) => {
+  try {
+    const accessToken = TokenServices.getToken().access;
+    return axios.delete(`${API_ROOM_URL}room${roomID}/${roomSlug}/`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    if (err.response.status === 401) {
+      alert("Your session was expired.");
+      TokenServices.destroyToken();
+      window.location.replace("/");
+    }
+  }
+};
+
 const RoomServices = {
   createRoom,
   getRooms,
@@ -158,6 +177,7 @@ const RoomServices = {
   getRoomMembers,
   kickRoomMember,
   assignAdminRoomMember,
+  deleteRoom,
 };
 
 export default RoomServices;

@@ -12,7 +12,7 @@ export function Nav({ userFullName, userImg }) {
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
-          href="#"
+          href="/rooms"
           variant="h5"
           className="flex items-center gap-2 cursor-pointer text-purple-700 w-20"
         >

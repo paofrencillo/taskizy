@@ -5,7 +5,7 @@ Holds the views for rooms.
 - RoomView
 - RoomAdminUpdateView
 - RoomMembersCreateView
-- RoomMembersRetriveUpdateDestroyView
+- RoomMembersDestroyView
 """
 
 from rest_framework.generics import (
@@ -13,6 +13,7 @@ from rest_framework.generics import (
     CreateAPIView,
     UpdateAPIView,
     RetrieveUpdateDestroyAPIView,
+    DestroyAPIView,
 )
 
 from rest_framework.views import APIView
@@ -87,10 +88,17 @@ class RoomView(RetrieveUpdateDestroyAPIView):
             return instance
 
         except Room.DoesNotExist:
-            raise Exception("Room does not exist.")
+            return None
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if instance is None:
+            return Response(
+                data="Room does not exists.",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
         serializer = self.serializer_class(instance, many=False)
 
         # Get the filtered tasks using django-filter
@@ -105,7 +113,9 @@ class RoomView(RetrieveUpdateDestroyAPIView):
         # Calculate the total number of pages
         total_pages = paginator.num_pages
 
-        page = self.paginate_queryset(filtered_tasks)
+        page = self.paginate_queryset(
+            filtered_tasks.order_by("is_completed", "-task_id")
+        )
 
         tasks_serialized = (
             [TasksListSerializer(task).data for task in page]
@@ -231,7 +241,7 @@ class RoomMembersListCreateView(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+class RoomMembersDestroyView(DestroyAPIView):
     queryset = RoomMember.objects.all()
     serializer_class = RoomMembersListSerializer
     permission_classes = (IsAuthenticated,)
@@ -249,12 +259,6 @@ class RoomMembersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
         except RoomMember.DoesNotExist:
             raise Exception("Room Member does not exists.")
-
-    def retrieve(self):
-        pass
-
-    def update(self):
-        pass
 
     def destroy(self, request, *args, **kwargs):
         try:

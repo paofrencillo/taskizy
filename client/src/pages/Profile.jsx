@@ -73,6 +73,7 @@ export default function Profile() {
   const handleUpdateFormSubmit = (e) => {
     e.preventDefault();
     setIsEditing(false);
+    setIsLoading(true);
 
     const userFormData = new FormData(e.target);
     const sendFormData = async () => {
@@ -90,6 +91,8 @@ export default function Profile() {
           toast.error(err_message);
         });
         setUserData(backupUserData);
+      } finally {
+        setIsLoading(false);
       }
     };
 

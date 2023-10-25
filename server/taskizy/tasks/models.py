@@ -50,7 +50,7 @@ class Task(models.Model):
     room = models.ForeignKey(
         Room,
         verbose_name=_("task_room_id"),
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         blank=False,
     )

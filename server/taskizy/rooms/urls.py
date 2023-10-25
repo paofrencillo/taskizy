@@ -4,7 +4,7 @@ from .views import (
     RoomView,
     RoomMembersListCreateView,
     RoomAdminUpdateView,
-    RoomMembersRetrieveUpdateDestroyView,
+    RoomMembersDestroyView,
 )
 
 urlpatterns = [
@@ -29,18 +29,8 @@ urlpatterns = [
         name="room-assign-admin",
     ),
     path(
-        "room/room<int:room_id>/member<int:member_id>/retrieve/",
-        RoomMembersRetrieveUpdateDestroyView.as_view(),
-        name="room-member-retrieve",
-    ),
-    path(
-        "room/room<int:room_id>/member<int:member_id>/update/",
-        RoomMembersRetrieveUpdateDestroyView.as_view(),
-        name="room-member-update",
-    ),
-    path(
         "room/room<int:room_id>/member<int:member_id>/destroy/",
-        RoomMembersRetrieveUpdateDestroyView.as_view(),
+        RoomMembersDestroyView.as_view(),
         name="room-member-destroy",
     ),
 ]

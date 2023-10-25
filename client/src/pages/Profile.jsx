@@ -5,7 +5,6 @@ import {
   Card,
   CardBody,
   Input,
-  Spinner,
 } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

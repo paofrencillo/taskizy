@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { API_ROOMS_URL, API_ROOM_URL } from "../config/apiUrls";
-import JWTTokenServices from "./JWTJWTTokenServices";
+import JWTTokenServices from "./JWTTokenServices";
 
 const createRoom = (roomFormData) => {
   try {

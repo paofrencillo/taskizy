@@ -13,6 +13,7 @@ import UsersServices from "../services/UsersServices";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import { ChangePassword } from "../components/ChangePassword/ChangePassword";
 import { freeUserImgURL } from "../config/userImgs";
+import { SERVER_URL } from "../config/apiUrls";
 
 export default function Profile() {
   const [userData, setUserData] = useState({});
@@ -151,7 +152,7 @@ export default function Profile() {
                         userData.user_image === null ||
                         userData.user_image === ""
                           ? freeUserImgURL
-                          : userData.user_image
+                          : `${SERVER_URL}${userData.user_image}`
                       }
                       alt="avatar"
                       size="xxl"

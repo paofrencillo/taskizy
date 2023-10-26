@@ -126,7 +126,7 @@ export default function Tasks() {
           {tasksData === null || !tasksData || tasksData.length === 0 ? (
             <div className="mt-10 flex flex-col gap-2 justify-center items-center">
               <Typography variant="h1" color="purple">
-                No Tasks
+                You have no tasks.
               </Typography>
               <img
                 className="w-96 object-cover object-center"

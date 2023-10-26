@@ -49,11 +49,11 @@ const destroyToken = () => {
   localStorage.removeItem("access");
 };
 
-const TokenServices = {
+const JWTTokenServices = {
   saveToken,
   getToken,
   refreshTokens,
   destroyToken,
 };
 
-export default TokenServices;
+export default JWTTokenServices;

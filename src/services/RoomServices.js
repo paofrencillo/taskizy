@@ -1,6 +1,7 @@
 import axios from "axios";
-import TokenServices from "./tokenServices";
+
 import { API_ROOMS_URL, API_ROOM_URL } from "../config/apiUrls";
+import TokenServices from "./JWTTokenServices";
 
 const createRoom = (roomFormData) => {
   try {

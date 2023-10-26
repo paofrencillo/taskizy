@@ -1,5 +1,5 @@
 import axios from "axios";
-import TokenServices from "./tokenServices";
+import TokenServices from "./JWTTokenServices";
 import {
   API_RESET_PASSWORD_CONFIRM_URL,
   API_RESET_PASSWORD_URL,

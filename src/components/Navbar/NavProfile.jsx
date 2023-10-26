@@ -11,7 +11,7 @@ import {
 } from "@material-tailwind/react";
 import { BsChevronDown, BsPersonCircle } from "react-icons/bs";
 import { RiShutDownLine } from "react-icons/ri";
-import TokenServices from "../../services/tokenServices";
+import JWTTokenServices from "../../services/JWTTokenServices";
 import AuthServices from "../../services/AuthServices";
 import { freeUserImgURL } from "../../config/userImgs";
 
@@ -24,7 +24,7 @@ export default function NavProfile({ fullName, userImg }) {
     try {
       const response = await AuthServices.logout();
       if (response.status === 205) {
-        TokenServices.destroyToken();
+        JWTTokenServices.destroyToken();
         window.location = "/";
       } else if (response.status === 401) {
         console.error("401 Forbidden");

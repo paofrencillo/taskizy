@@ -17,15 +17,14 @@ import { FaKey } from "react-icons/fa";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import AuthServices from "../services/AuthServices";
 import UsersServices from "../services/UsersServices";
-import TokenServices from "../services/JWTTokenServices";
-TokenServices;
+import JWTTokenServices from "../services/JWTTokenServices";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSendLoading, setIsEmailSendLoading] = useState(false);
   const [openForgotPassDialog, setOpenForgotPassDialog] = useState(false);
   const [emailErrors, setEmailErrors] = useState([]);
-  const token = TokenServices.getToken().refresh;
+  const token = JWTTokenServices.getToken().refresh;
 
   // check if token is already saved in local storage
   if (token) {
@@ -79,7 +78,7 @@ export default function Login() {
       await AuthServices.login(formData)
         .then((res) => {
           if (res.status === 200) {
-            TokenServices.saveToken(res.data);
+            JWTTokenServices.saveToken(res.data);
             return redirect("/rooms");
           }
         })

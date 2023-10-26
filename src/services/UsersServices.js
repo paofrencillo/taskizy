@@ -1,5 +1,5 @@
 import axios from "axios";
-import TokenServices from "./JWTTokenServices";
+import JWTTokenServices from "./JWTTokenServices";
 import {
   API_RESET_PASSWORD_CONFIRM_URL,
   API_RESET_PASSWORD_URL,
@@ -9,7 +9,7 @@ import {
 
 const getUsers = (roomID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(`${API_USERS_URL}${roomID}/`, {
       headers: {
         Authorization: `JWT ${accessToken}`,
@@ -25,7 +25,7 @@ const getUsers = (roomID) => {
 
 const getUser = () => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(`${API_USERS_URL}me/`, {
       headers: {
         Authorization: `JWT ${accessToken}`,
@@ -41,7 +41,7 @@ const getUser = () => {
 
 const updateUser = (userFormData) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(`${API_USERS_URL}me/`, userFormData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -58,7 +58,7 @@ const updateUser = (userFormData) => {
 
 const changeUserImage = (userImageData) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(`${API_USERS_URL}me/`, userImageData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -75,7 +75,7 @@ const changeUserImage = (userImageData) => {
 
 const changePassword = (formData) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.post(API_SET_PASSWORD_URL, formData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

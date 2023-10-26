@@ -1,10 +1,10 @@
 import axios from "axios";
-import TokenServices from "./tokenServices";
+import JWTTokenServices from "./JWTTokenServices";
 import { API_TASKS_URL, API_TASK_URL } from "../config/apiUrls";
 
 const getUserTasks = (userID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(`${API_TASKS_URL}user${userID}/`, {
       headers: {
         Authorization: `JWT ${accessToken}`,
@@ -17,7 +17,7 @@ const getUserTasks = (userID) => {
 
 const getRoomTasksPage = (url) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(url, {
       headers: {
         Authorization: `JWT ${accessToken}`,
@@ -30,7 +30,7 @@ const getRoomTasksPage = (url) => {
 
 const createTask = (taskFormData, roomID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.post(`${API_TASK_URL}room${roomID}/create/`, taskFormData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -41,7 +41,7 @@ const createTask = (taskFormData, roomID) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -49,7 +49,7 @@ const createTask = (taskFormData, roomID) => {
 
 const markAsDoneTask = (roomID, taskID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(
       `${API_TASK_URL}room${roomID}/task${taskID}/mark-done/`,
       { is_completed: true },
@@ -64,7 +64,7 @@ const markAsDoneTask = (roomID, taskID) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -72,7 +72,7 @@ const markAsDoneTask = (roomID, taskID) => {
 
 const deleteTask = (taskID, roomID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.delete(`${API_TASK_URL}room${roomID}/task${taskID}/delete/`, {
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const deleteTask = (taskID, roomID) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }

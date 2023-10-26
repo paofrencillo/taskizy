@@ -16,8 +16,9 @@ import { MdMail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import AuthServices from "../services/AuthServices";
-import TokenServices from "../services/tokenServices";
 import UsersServices from "../services/UsersServices";
+import TokenServices from "../services/JWTTokenServices";
+TokenServices;
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);

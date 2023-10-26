@@ -6,7 +6,7 @@ import {
   API_AUTH_LOGOUT_URL,
 } from "../config/apiUrls";
 
-import TokenServices from "./tokenServices";
+import TokenServices from "./JWTTokenServices";
 
 const register = (formData) => {
   try {

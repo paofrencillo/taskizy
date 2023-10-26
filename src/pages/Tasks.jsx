@@ -133,9 +133,6 @@ export default function Tasks() {
                 src="/undraw_pending_approval_xuu9.svg"
                 alt="nature image"
               />
-              <Typography variant="h6" color="purple" className="text-center">
-                You need to create or join a room to create tasks.
-              </Typography>
             </div>
           ) : (
             <>

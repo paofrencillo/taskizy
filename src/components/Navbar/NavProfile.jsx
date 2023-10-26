@@ -13,7 +13,6 @@ import { BsChevronDown, BsPersonCircle } from "react-icons/bs";
 import { RiShutDownLine } from "react-icons/ri";
 import TokenServices from "../../services/tokenServices";
 import AuthServices from "../../services/AuthServices";
-import { SERVER_URL } from "../../config/apiUrls";
 import { freeUserImgURL } from "../../config/userImgs";
 
 export default function NavProfile({ fullName, userImg }) {
@@ -51,7 +50,7 @@ export default function NavProfile({ fullName, userImg }) {
             src={
               userImg === null || userImg === undefined
                 ? freeUserImgURL
-                : `${SERVER_URL}${userImg}`
+                : userImg
             }
           />
 
@@ -73,11 +72,11 @@ export default function NavProfile({ fullName, userImg }) {
             {fullName}
           </Typography>
         </MenuItem>
-        <MenuItem
-          onClick={closeMenu}
-          className="flex items-center gap-2 rounded w-full"
-        >
-          <Link to={"/me"}>
+        <Link to={"/me"}>
+          <MenuItem
+            onClick={closeMenu}
+            className="flex items-center gap-2 rounded w-full"
+          >
             <Typography
               as="span"
               variant="small"
@@ -86,8 +85,8 @@ export default function NavProfile({ fullName, userImg }) {
               <BsPersonCircle />
               My Profile
             </Typography>
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
         <MenuItem
           onClick={closeMenu}
           className="flex items-center gap-2 rounded w-full"

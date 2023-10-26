@@ -7,11 +7,11 @@ export default function ActivateSuccess() {
         Account activated
       </h1>
       <h3 className="text-center text-xl font-semibold text-purple-500 ">
-        You may now close this window or{" "}
+        You may now close this window or&nbsp;
         <Link to={"/"} className="underline hover:text-purple-900">
           click here
         </Link>
-        to redirect on login page.
+        &nbsp;to redirect on login page.
       </h3>
     </div>
   );

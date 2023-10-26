@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import UsersServices from "../../services/UsersServices";
-import MemberLabel from "./MemberLabel";
 import { useParams } from "react-router-dom";
 import RoomServices from "../../services/RoomServices";
+import { freeUserImgURL } from "../../config/userImgs";
 
 export default function InviteMembers() {
   const [options, setOptions] = useState([]);
@@ -23,6 +23,10 @@ export default function InviteMembers() {
         const newOptions = members.map((member) => ({
           value: member.id,
           label: member.first_name + " " + member.last_name, // Store the full name separately
+          user_image:
+            member.user_image === null || member.user_image === ""
+              ? freeUserImgURL
+              : member.user_image,
         }));
 
         setOptions(newOptions);
@@ -83,8 +87,20 @@ export default function InviteMembers() {
           options={filteredOptions}
           onInputChange={handleInputChange}
           inputValue={searchInput}
-          formatOptionLabel={({ label }) => (
-            <MemberLabel memberFullName={label} />
+          // formatOptionLabel={({ label }) => (
+          //   <MemberLabel userImg={} memberFullName={label} />
+          // )}
+          formatOptionLabel={({ user_image, label }) => (
+            <div className="flex justify-start items-center gap-2 group">
+              <div className="w-8 h-8 rounded-full">
+                <img
+                  src={user_image}
+                  alt="user-img"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </div>
+              <div className="text-sm">{label}</div>
+            </div>
           )}
           onChange={handleSelectChange}
           value={selectedValues}

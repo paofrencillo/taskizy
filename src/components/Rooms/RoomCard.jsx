@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ImEnter } from "react-icons/im";
 import { Link } from "react-router-dom";
 import { Avatar, Progress, Typography } from "@material-tailwind/react";
-import { SERVER_URL } from "../../config/apiUrls";
 import { freeUserImgURL } from "../../config/userImgs";
 
 export default function RoomCard({ roomData, user }) {
@@ -80,9 +79,9 @@ export default function RoomCard({ roomData, user }) {
           className="p-0.5 bg-gray-100"
           src={
             roomData.room_admin.user_image === null ||
-            roomData.room_admin.user_image === undefined
+            roomData.room_admin.user_image === ""
               ? freeUserImgURL
-              : `${SERVER_URL}${roomData.room_admin.user_image}`
+              : roomData.room_admin.user_image
           }
           title={
             roomData.room_admin.id === user.userID

@@ -14,7 +14,6 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
 import TaskServices from "../../services/TaskServices";
 import MutatingDotsLoader from "../Loader/MutatingDotsLoader";
-import { SERVER_URL } from "../../config/apiUrls";
 import { anonymousUserImgURL, freeUserImgURL } from "../../config/userImgs";
 
 export default function TasksTable({ tasksData, user }) {
@@ -106,47 +105,43 @@ export default function TasksTable({ tasksData, user }) {
 
   return (
     <>
-      {isLoading ? (
-        <div className="w-screen h-screen">
-          <MutatingDotsLoader />
-        </div>
-      ) : (
-        <>
-          <ToastContainer position="bottom-right" />
-          {/*  */}
-          {/* Delete Task Modal */}
-          {/*  */}
-          <Dialog
-            size="xs"
-            open={openDeleteModal}
-            handler={handleOpenDeleteModal}
+      <ToastContainer position="bottom-right" />
+      {/*  */}
+      {/* Delete Task Modal */}
+      {/*  */}
+      <Dialog size="xs" open={openDeleteModal} handler={handleOpenDeleteModal}>
+        <DialogHeader>Delete Task</DialogHeader>
+        <DialogBody divider>
+          Are you sure you want to delete this task?
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpenDeleteModal}
+            className="mr-1"
           >
-            <DialogHeader>Delete Task</DialogHeader>
-            <DialogBody divider>
-              Are you sure you want to delete this task?
-            </DialogBody>
-            <DialogFooter>
-              <Button
-                variant="text"
-                color="red"
-                onClick={handleOpenDeleteModal}
-                className="mr-1"
-              >
-                <span>Cancel</span>
-              </Button>
-              <Button
-                variant="gradient"
-                color="green"
-                onClick={handleSendTaskTrash}
-              >
-                <span>Yes, Delete Task</span>
-              </Button>
-            </DialogFooter>
-          </Dialog>
-          {/*  */}
-          {/* Tasks Table */}
-          {/*  */}
-          <div className="my-4">
+            <span>Cancel</span>
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={handleSendTaskTrash}
+          >
+            <span>Yes, Delete Task</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+      {/*  */}
+      {/* Tasks Table */}
+      {/*  */}
+      <div className="my-4">
+        <div className="w-screen h-screen">
+          {isLoading ? (
+            <div className="w-screen h-screen">
+              <MutatingDotsLoader />
+            </div>
+          ) : (
             <table className="w-full text-left text-sm font-light text-gray-700 bg-gray-100">
               <thead className="border-b font-medium shadow-md  text-gray-800 bg-gray-200">
                 <tr>
@@ -209,7 +204,7 @@ export default function TasksTable({ tasksData, user }) {
                                 size="sm"
                                 src={
                                   task.creator.user_image !== null
-                                    ? `${SERVER_URL}${task.creator.user_image}`
+                                    ? task.creator.user_image
                                     : freeUserImgURL
                                 }
                               />
@@ -220,7 +215,7 @@ export default function TasksTable({ tasksData, user }) {
 
                           <span>
                             {task.creator.id !== user.userID
-                              ? `${task.creator.first_name} ${task.creator.last_name}`
+                              ? task.creator.first_name
                               : task.creator.id === user.userID
                               ? "Me"
                               : "AnonymousUser"}
@@ -264,9 +259,9 @@ export default function TasksTable({ tasksData, user }) {
                 })}
               </tbody>
             </table>
-          </div>
-        </>
-      )}
+          )}
+        </div>
+      </div>
     </>
   );
 }

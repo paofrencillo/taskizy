@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import AuthServices from "../services/AuthServices";
@@ -30,8 +30,7 @@ export default function Register() {
         .then((res) => {
           if (res.status === 201) {
             toast.success(
-              "Account created successfully! Check your email's inbox for activation link.",
-              { position: toast.POSITION.BOTTOM_RIGHT }
+              "Account created successfully! Check your email's inbox for activation link."
             );
           }
         })
@@ -44,17 +43,13 @@ export default function Register() {
         .finally(() => {
           setIsLoading(false);
         });
-      //  catch (error) {
-      //   window.location = "/400";
-      // } finally {
-      //   setIsLoading(false);
-      // }
     };
     getResponse();
   }
 
   return (
     <div className="relative h-screen w-screen">
+      <ToastContainer position="bottom-right" />
       <div className="w-full h-2/3 bg-purple-800"></div>
       <div className="w-full h-1/3 bg-white"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

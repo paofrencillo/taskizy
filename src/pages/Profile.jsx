@@ -12,6 +12,7 @@ import { TbPhotoEdit } from "react-icons/tb";
 import UsersServices from "../services/UsersServices";
 import MutatingDotsLoader from "../components/Loader/MutatingDotsLoader";
 import { ChangePassword } from "../components/ChangePassword/ChangePassword";
+import { freeUserImgURL } from "../config/userImgs";
 
 export default function Profile() {
   const [userData, setUserData] = useState({});
@@ -148,9 +149,9 @@ export default function Profile() {
                     <Avatar
                       src={
                         userData.user_image === null ||
-                        userData.user_image === undefined
-                          ? "https://img.freepik.com/free-vector/cute-astronaut-dance-cartoon-vector-icon-illustration-technology-science-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3851.jpg?w=740&t=st=1697513748~exp=1697514348~hmac=91629226d8cfffc849dce53dc83f9128e68a93a5fe7bc9273638b8efb0988ba1"
-                          : `http://127.0.0.1:8000${userData.user_image}`
+                        userData.user_image === ""
+                          ? freeUserImgURL
+                          : userData.user_image
                       }
                       alt="avatar"
                       size="xxl"

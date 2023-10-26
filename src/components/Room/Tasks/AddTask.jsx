@@ -16,8 +16,8 @@ import makeAnimated from "react-select/animated";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdAddTask } from "react-icons/md";
-import MemberLabel from "../MemberLabel";
 import TaskServices from "../../../services/TaskServices";
+import { freeUserImgURL } from "../../../config/userImgs";
 
 export default function AddTask({ roomMembers, user }) {
   const [open, setOpen] = useState(false);
@@ -38,6 +38,10 @@ export default function AddTask({ roomMembers, user }) {
           label: `${member.first_name} ${member.last_name}${
             member.id === user.userID ? " (Me)" : ""
           }`,
+          user_image:
+            member.user_image === null || member.user_image === ""
+              ? freeUserImgURL
+              : member.user_image,
         }));
 
         setOptions(newOptions);
@@ -151,8 +155,17 @@ export default function AddTask({ roomMembers, user }) {
                   options={filteredOptions}
                   onInputChange={handleInputChange}
                   inputValue={searchInput}
-                  formatOptionLabel={({ label }) => (
-                    <MemberLabel memberFullName={label} />
+                  formatOptionLabel={({ user_image, label }) => (
+                    <div className="flex justify-start items-center gap-2 group">
+                      <div className="w-8 h-8 rounded-full">
+                        <img
+                          src={user_image}
+                          alt="user-img"
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      </div>
+                      <div className="text-sm">{label}</div>
+                    </div>
                   )}
                   onChange={handleSelectChange}
                   placeholder={"Select Tasker ..."}

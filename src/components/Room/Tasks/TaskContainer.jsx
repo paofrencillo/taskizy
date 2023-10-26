@@ -19,7 +19,6 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import TaskServices from "../../../services/TaskServices";
 import MutatingDotsLoader from "../../Loader/MutatingDotsLoader";
 import { anonymousUserImgURL, freeUserImgURL } from "../../../config/userImgs";
-import { SERVER_URL } from "../../../config/apiUrls";
 
 export default function TaskContainer({ tasks, user, roomAdmin }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -166,9 +165,10 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                           size="md"
                           src={
                             task.tasker !== null
-                              ? task.tasker.user_image === null
+                              ? task.tasker.user_image === null ||
+                                task.tasker.user_image === ""
                                 ? freeUserImgURL
-                                : `${SERVER_URL}${task.tasker.user_image}`
+                                : `${task.tasker.user_image}`
                               : anonymousUserImgURL
                           }
                           alt="tasker-img"
@@ -197,9 +197,10 @@ export default function TaskContainer({ tasks, user, roomAdmin }) {
                           size="xs"
                           src={
                             task.creator !== null
-                              ? task.creator.user_image === null
+                              ? task.creator.user_image === null ||
+                                task.creator.user_image === ""
                                 ? freeUserImgURL
-                                : `${SERVER_URL}${task.creator.user_image}`
+                                : `${task.creator.user_image}`
                               : anonymousUserImgURL
                           }
                           alt="creator-img"

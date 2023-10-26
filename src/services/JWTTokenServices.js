@@ -44,10 +44,6 @@ const refreshTokens = () => {
   }
 };
 
-// const verifyToken = (refreshToken) => {
-//   return;
-// };
-
 const destroyToken = () => {
   localStorage.removeItem("refresh");
   localStorage.removeItem("access");
@@ -57,7 +53,6 @@ const JWTTokenServices = {
   saveToken,
   getToken,
   refreshTokens,
-  // verifyToken,
   destroyToken,
 };
 

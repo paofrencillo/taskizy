@@ -1,10 +1,11 @@
 import axios from "axios";
-import TokenServices from "./JWTTokenServices";
+
 import { API_ROOMS_URL, API_ROOM_URL } from "../config/apiUrls";
+import JWTTokenServices from "./JWTJWTTokenServices";
 
 const createRoom = (roomFormData) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.post(API_ROOMS_URL, roomFormData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -15,7 +16,7 @@ const createRoom = (roomFormData) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -23,7 +24,7 @@ const createRoom = (roomFormData) => {
 
 const getRooms = () => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(API_ROOMS_URL, {
       headers: {
         Authorization: `JWT ${accessToken}`,
@@ -33,7 +34,7 @@ const getRooms = () => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -41,7 +42,7 @@ const getRooms = () => {
 
 const getRoomData = (params) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(
       `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`,
       {
@@ -54,7 +55,7 @@ const getRoomData = (params) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -62,7 +63,7 @@ const getRoomData = (params) => {
 
 const addRoomMembers = (formData, params) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.post(
       `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
       formData,
@@ -76,7 +77,7 @@ const addRoomMembers = (formData, params) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -84,7 +85,7 @@ const addRoomMembers = (formData, params) => {
 
 const getRoomMembers = (params) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.get(
       `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
       {
@@ -97,7 +98,7 @@ const getRoomMembers = (params) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -105,7 +106,7 @@ const getRoomMembers = (params) => {
 
 const kickRoomMember = (roomID, memberID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.delete(
       `${API_ROOM_URL}room${roomID}/member${memberID}/destroy/`,
       {
@@ -118,7 +119,7 @@ const kickRoomMember = (roomID, memberID) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
     if (err.response.status === 500) {
@@ -129,7 +130,7 @@ const kickRoomMember = (roomID, memberID) => {
 
 const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(
       `${API_ROOM_URL}room${roomID}/${roomSlug}/assign_as_admin/`,
       { room_admin: memberID },
@@ -144,7 +145,7 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }
@@ -152,7 +153,7 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
 
 const deleteRoom = (roomID, roomSlug) => {
   try {
-    const accessToken = TokenServices.getToken().access;
+    const accessToken = JWTTokenServices.getToken().access;
     return axios.delete(`${API_ROOM_URL}room${roomID}/${roomSlug}/`, {
       headers: {
         "Content-Type": "application/json",
@@ -163,7 +164,7 @@ const deleteRoom = (roomID, roomSlug) => {
     console.error(err);
     if (err.response.status === 401) {
       alert("Your session was expired.");
-      TokenServices.destroyToken();
+      JWTTokenServices.destroyToken();
       window.location.replace("/");
     }
   }

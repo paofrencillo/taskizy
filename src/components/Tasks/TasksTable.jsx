@@ -15,7 +15,6 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import TaskServices from "../../services/TaskServices";
 import MutatingDotsLoader from "../Loader/MutatingDotsLoader";
 import { anonymousUserImgURL, freeUserImgURL } from "../../config/userImgs";
-import { SERVER_URL } from "../../config/apiUrls";
 
 export default function TasksTable({ tasksData, user }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -205,7 +204,7 @@ export default function TasksTable({ tasksData, user }) {
                                 size="sm"
                                 src={
                                   task.creator.user_image !== null
-                                    ? `${SERVER_URL}${task.creator.user_image}`
+                                    ? task.creator.user_image
                                     : freeUserImgURL
                                 }
                               />

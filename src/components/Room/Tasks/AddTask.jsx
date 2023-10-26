@@ -18,7 +18,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { MdAddTask } from "react-icons/md";
 import TaskServices from "../../../services/TaskServices";
 import { freeUserImgURL } from "../../../config/userImgs";
-import { SERVER_URL } from "../../../config/apiUrls";
 
 export default function AddTask({ roomMembers, user }) {
   const [open, setOpen] = useState(false);
@@ -42,7 +41,7 @@ export default function AddTask({ roomMembers, user }) {
           user_image:
             member.user_image === null || member.user_image === ""
               ? freeUserImgURL
-              : `${SERVER_URL}${member.user_image}`,
+              : member.user_image,
         }));
 
         setOptions(newOptions);

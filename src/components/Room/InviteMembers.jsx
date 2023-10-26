@@ -5,7 +5,6 @@ import UsersServices from "../../services/UsersServices";
 import { useParams } from "react-router-dom";
 import RoomServices from "../../services/RoomServices";
 import { freeUserImgURL } from "../../config/userImgs";
-import { SERVER_URL } from "../../config/apiUrls";
 
 export default function InviteMembers() {
   const [options, setOptions] = useState([]);
@@ -27,7 +26,7 @@ export default function InviteMembers() {
           user_image:
             member.user_image === null || member.user_image === ""
               ? freeUserImgURL
-              : `${SERVER_URL}${member.user_image}`,
+              : member.user_image,
         }));
 
         setOptions(newOptions);

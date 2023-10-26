@@ -11,10 +11,9 @@ import {
 } from "@material-tailwind/react";
 import { BsChevronDown, BsPersonCircle } from "react-icons/bs";
 import { RiShutDownLine } from "react-icons/ri";
-import TokenServices from "../../services/tokenServices";
+import JWTTokenServices from "../../services/JWTTokenServices";
 import AuthServices from "../../services/AuthServices";
 import { freeUserImgURL } from "../../config/userImgs";
-import { SERVER_URL } from "../../config/apiUrls";
 
 export default function NavProfile({ fullName, userImg }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +24,7 @@ export default function NavProfile({ fullName, userImg }) {
     try {
       const response = await AuthServices.logout();
       if (response.status === 205) {
-        TokenServices.destroyToken();
+        JWTTokenServices.destroyToken();
         window.location = "/";
       } else if (response.status === 401) {
         console.error("401 Forbidden");
@@ -49,9 +48,7 @@ export default function NavProfile({ fullName, userImg }) {
             alt="user-image"
             className="border border-gray-900 p-0.5"
             src={
-              userImg === null || userImg === ""
-                ? freeUserImgURL
-                : `${SERVER_URL}${userImg}`
+              userImg === null || userImg === "" ? freeUserImgURL : { userImg }
             }
           />
 

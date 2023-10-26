@@ -6,7 +6,7 @@ import {
   API_AUTH_LOGOUT_URL,
 } from "../config/apiUrls";
 
-import TokenServices from "./JWTTokenServices";
+import JWTTokenServices from "./JWTTokenServices";
 
 const register = (formData) => {
   try {
@@ -41,8 +41,8 @@ const login = (formData) => {
 };
 
 const logout = async () => {
-  const refreshToken = TokenServices.getToken().refresh;
-  const accessToken = TokenServices.getToken().access;
+  const refreshToken = JWTTokenServices.getToken().refresh;
+  const accessToken = JWTTokenServices.getToken().access;
   const refreshTokenForm = new FormData();
   refreshTokenForm.append("refresh", refreshToken);
 

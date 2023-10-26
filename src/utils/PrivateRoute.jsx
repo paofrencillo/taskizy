@@ -1,19 +1,19 @@
 import { Navigate, Outlet } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import TokenServices from "../services/tokenServices";
+import JWTTokenServices from "../services/JWTTokenServices";
 import { Nav } from "../components/Navbar/Nav";
 import { useEffect, useState } from "react";
 
 export default function PrivateRoute(props) {
   const [accessToken, setAccessToken] = useState(
-    TokenServices.getToken().access
+    JWTTokenServices.getToken().access
   );
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
     const refreshTokens = () => {
-      TokenServices.refreshTokens();
-      setAccessToken(TokenServices.getToken().access);
+      JWTTokenServices.refreshTokens();
+      setAccessToken(JWTTokenServices.getToken().access);
       const decodedAccessToken = jwt_decode(accessToken);
 
       // Decode the token and update the user data

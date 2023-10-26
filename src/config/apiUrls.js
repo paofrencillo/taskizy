@@ -1,4 +1,4 @@
-export const SERVER_URL = "https://taskizy-api-production.up.railway.app/";
+export const SERVER_URL = "https://taskizy-api.up.railway.app/";
 
 export const API_BASE_URL = `${SERVER_URL}api/`;
 

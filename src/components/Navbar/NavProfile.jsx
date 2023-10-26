@@ -14,6 +14,7 @@ import { RiShutDownLine } from "react-icons/ri";
 import TokenServices from "../../services/tokenServices";
 import AuthServices from "../../services/AuthServices";
 import { freeUserImgURL } from "../../config/userImgs";
+import { SERVER_URL } from "../../config/apiUrls";
 
 export default function NavProfile({ fullName, userImg }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,9 +49,9 @@ export default function NavProfile({ fullName, userImg }) {
             alt="user-image"
             className="border border-gray-900 p-0.5"
             src={
-              userImg === null || userImg === undefined
+              userImg === null || userImg === ""
                 ? freeUserImgURL
-                : userImg
+                : `${SERVER_URL}${userImg}`
             }
           />
 

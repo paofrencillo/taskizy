@@ -126,16 +126,13 @@ export default function Tasks() {
           {tasksData === null || !tasksData || tasksData.length === 0 ? (
             <div className="mt-10 flex flex-col gap-2 justify-center items-center">
               <Typography variant="h1" color="purple">
-                No Tasks
+                You have no tasks.
               </Typography>
               <img
                 className="w-96 object-cover object-center"
                 src="/undraw_pending_approval_xuu9.svg"
                 alt="nature image"
               />
-              <Typography variant="h6" color="purple" className="text-center">
-                You need to create or join a room to create tasks.
-              </Typography>
             </div>
           ) : (
             <>

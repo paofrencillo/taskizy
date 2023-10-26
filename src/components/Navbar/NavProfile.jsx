@@ -47,9 +47,7 @@ export default function NavProfile({ fullName, userImg }) {
             size="sm"
             alt="user-image"
             className="border border-gray-900 p-0.5"
-            src={
-              userImg === null || userImg === "" ? freeUserImgURL : { userImg }
-            }
+            src={userImg === null || userImg === "" ? freeUserImgURL : userImg}
           />
 
           <BsChevronDown

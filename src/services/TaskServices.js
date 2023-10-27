@@ -5,7 +5,7 @@ import { API_TASKS_URL, API_TASK_URL } from "../config/apiUrls";
 const getUserTasks = (userID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.get(`${API_TASKS_URL}user${userID}/`, {
+    return axios.get(`${API_TASKS_URL}user/${userID}/`, {
       headers: {
         Authorization: `JWT ${accessToken}`,
       },

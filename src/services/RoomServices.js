@@ -43,14 +43,11 @@ const getRooms = () => {
 const getRoomData = (params) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.get(
-      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`,
-      {
-        headers: {
-          Authorization: `JWT ${accessToken}`,
-        },
-      }
-    );
+    return axios.get(`${API_ROOM_URL}${params.room_id}/${params.room_slug}/`, {
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
@@ -65,7 +62,7 @@ const addRoomMembers = (formData, params) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.post(
-      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
+      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/members/`,
       formData,
       {
         headers: {
@@ -87,7 +84,7 @@ const getRoomMembers = (params) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.get(
-      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
+      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/members/`,
       {
         headers: {
           Authorization: `JWT ${accessToken}`,
@@ -107,14 +104,11 @@ const getRoomMembers = (params) => {
 const kickRoomMember = (roomID, memberID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.delete(
-      `${API_ROOM_URL}room${roomID}/member${memberID}/destroy/`,
-      {
-        headers: {
-          Authorization: `JWT ${accessToken}`,
-        },
-      }
-    );
+    return axios.delete(`${API_ROOM_URL}${roomID}/${memberID}/destroy/`, {
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {
@@ -132,7 +126,7 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(
-      `${API_ROOM_URL}room${roomID}/${roomSlug}/assign_as_admin/`,
+      `${API_ROOM_URL}${roomID}/${roomSlug}/assign_as_admin/`,
       { room_admin: memberID },
       {
         headers: {
@@ -154,7 +148,7 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
 const deleteRoom = (roomID, roomSlug) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.delete(`${API_ROOM_URL}room${roomID}/${roomSlug}/`, {
+    return axios.delete(`${API_ROOM_URL}${roomID}/${roomSlug}/`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${accessToken}`,

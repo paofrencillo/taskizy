@@ -25,6 +25,7 @@ import { RiUserStarLine } from "react-icons/ri";
 import { GrFormClose } from "react-icons/gr";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { freeUserImgURL } from "../../config/userImgs";
+import { SERVER_URL } from "../../config/apiUrls";
 
 export function MembersCard({ roomMembers, roomAdmin, user }) {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
@@ -295,7 +296,7 @@ export function MembersCard({ roomMembers, roomAdmin, user }) {
                       <Avatar src={freeUserImgURL} alt="member-img" size="sm" />
                     ) : (
                       <Avatar
-                        src={member.user_image}
+                        src={`${SERVER_URL}${member.user_image}`}
                         alt="member-img"
                         size="sm"
                       />

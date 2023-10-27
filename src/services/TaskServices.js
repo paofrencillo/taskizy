@@ -5,7 +5,7 @@ import { API_TASKS_URL, API_TASK_URL } from "../config/apiUrls";
 const getUserTasks = (userID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.get(`${API_TASKS_URL}user${userID}/`, {
+    return axios.get(`${API_TASKS_URL}user/${userID}/`, {
       headers: {
         Authorization: `JWT ${accessToken}`,
       },
@@ -31,7 +31,7 @@ const getRoomTasksPage = (url) => {
 const createTask = (taskFormData, roomID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.post(`${API_TASK_URL}room${roomID}/create/`, taskFormData, {
+    return axios.post(`${API_TASK_URL}${roomID}/create/`, taskFormData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `JWT ${accessToken}`,
@@ -51,7 +51,7 @@ const markAsDoneTask = (roomID, taskID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(
-      `${API_TASK_URL}room${roomID}/task${taskID}/mark-done/`,
+      `${API_TASK_URL}room/${roomID}/task/${taskID}/mark-done/`,
       { is_completed: true },
       {
         headers: {
@@ -73,12 +73,15 @@ const markAsDoneTask = (roomID, taskID) => {
 const deleteTask = (taskID, roomID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
-    return axios.delete(`${API_TASK_URL}room${roomID}/task${taskID}/delete/`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    });
+    return axios.delete(
+      `${API_TASK_URL}room/${roomID}/task/${taskID}/delete/`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${accessToken}`,
+        },
+      }
+    );
   } catch (err) {
     console.error(err);
     if (err.response.status === 401) {

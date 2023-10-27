@@ -1,8 +1,17 @@
 {
   "rewrites": [
-    { "source": "/room/:room_id/:room_slug", "destination": "/" },
-    { "source": "/activate/:uid/:token/", "destination": "/" },
-    { "source": "/password-reset/confirm/:uid/:token/", "destination": "/" },
+    {
+      "source": "/room/:room_id/:room_slug",
+      "destination": "/room/:room_id/:room_slug"
+    },
+    {
+      "source": "/activate/:uid/:token/",
+      "destination": "/activate/:uid/:token/"
+    },
+    {
+      "source": "/password-reset/confirm/:uid/:token/",
+      "destination": "/password-reset/confirm/:uid/:token/"
+    },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

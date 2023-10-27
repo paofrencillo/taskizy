@@ -39,7 +39,7 @@ export default function Room() {
   const [openMembersDrawer, setOpenMembersDrawer] = useState(false);
   const toggleOpenMembersDrawer = () => setOpenMembersDrawer((cur) => !cur);
   const params = useParams();
-  const roomURL = `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`;
+  const roomURL = `${API_ROOM_URL}${params.room_id}/${params.room_slug}/`;
 
   const filterValues = [
     "All",

@@ -27,6 +27,7 @@ const getRooms = () => {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.get(API_ROOMS_URL, {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `JWT ${accessToken}`,
       },
     });
@@ -44,9 +45,10 @@ const getRoomData = (params) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.get(
-      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/`,
+      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/`,
       {
         headers: {
+          "Content-Type": "application/json",
           Authorization: `JWT ${accessToken}`,
         },
       }
@@ -65,10 +67,11 @@ const addRoomMembers = (formData, params) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.post(
-      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
+      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/members/`,
       formData,
       {
         headers: {
+          "Content-Type": "application/json",
           Authorization: `JWT ${accessToken}`,
         },
       }
@@ -87,9 +90,10 @@ const getRoomMembers = (params) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.get(
-      `${API_ROOM_URL}room${params.room_id}/${params.room_slug}/members/`,
+      `${API_ROOM_URL}${params.room_id}/${params.room_slug}/members/`,
       {
         headers: {
+          "Content-Type": "application/json",
           Authorization: `JWT ${accessToken}`,
         },
       }
@@ -108,9 +112,10 @@ const kickRoomMember = (roomID, memberID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.delete(
-      `${API_ROOM_URL}room${roomID}/member${memberID}/destroy/`,
+      `${API_ROOM_URL}${roomID}/member/${memberID}/destroy/`,
       {
         headers: {
+          "Content-Type": "application/json",
           Authorization: `JWT ${accessToken}`,
         },
       }
@@ -132,7 +137,7 @@ const assignAdminRoomMember = (roomID, roomSlug, memberID) => {
   try {
     const accessToken = JWTTokenServices.getToken().access;
     return axios.patch(
-      `${API_ROOM_URL}room${roomID}/${roomSlug}/assign_as_admin/`,
+      `${API_ROOM_URL}${roomID}/${roomSlug}/assign_as_admin/`,
       { room_admin: memberID },
       {
         headers: {

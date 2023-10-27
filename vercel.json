@@ -1,6 +1,6 @@
 {
   "routes": [
-    { "src": "/room/:room_id/:room_slug", "dest": "/", "status": 200 },
+    { "src": "/room/:room_id/:room_slug", "dest": "/room", "status": 200 },
     { "src": "/[^.]+", "dest": "/", "status": 200 }
   ]
 }

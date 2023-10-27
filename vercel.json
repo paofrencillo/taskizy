@@ -1,9 +1,6 @@
 {
   "routes": [
-    {
-      "src": "/room/:room_id/:room_slug",
-      "dest": "https://taskizy-api.up.railway.app/api/room:room_id/:room_slug/"
-    },
+    { "src": "/room/:room_id/:room_slug", "dest": "/", "status": 200 },
     { "src": "/[^.]+", "dest": "/", "status": 200 }
   ]
 }

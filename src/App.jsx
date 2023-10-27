@@ -17,7 +17,7 @@ import ResetPass from "./pages/ResetPass.jsx";
 export default function App() {
   return (
     <>
-      <Router>
+      <Router basename="/index.html">
         <Routes>
           <Route element={<PrivateRoute />}>
             <Route path="/rooms" element={<Rooms />} />

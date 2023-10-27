@@ -1,17 +1,3 @@
 {
-  "rewrites": [
-    {
-      "source": "/room/:room_id/:room_slug",
-      "destination": "/"
-    },
-    {
-      "source": "/activate/:uid/:token/",
-      "destination": "/activate/:uid/:token/"
-    },
-    {
-      "source": "/password-reset/confirm/:uid/:token/",
-      "destination": "/password-reset/confirm/:uid/:token/"
-    },
-    { "source": "/(.*)", "destination": "/" }
-  ]
+  "routes": [{ "handle": "filesystem" }, { "src": "/(.*)", "dest": "/" }]
 }

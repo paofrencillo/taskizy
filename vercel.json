@@ -3,7 +3,6 @@
     { "source": "/room/:room_id/:room_slug", "destination": "/" },
     { "source": "/activate/:uid/:token/", "destination": "/" },
     { "source": "/password-reset/confirm/:uid/:token/", "destination": "/" },
-    { "source": "/(.*)", "destination": "/" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

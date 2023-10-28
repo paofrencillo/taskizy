@@ -32,8 +32,7 @@ export default function Rooms() {
       } catch (error) {
         console.error(error);
         if (error.response.status === 401) {
-          const response = JWTTokenServices.refreshTokens();
-          console.log(response.status);
+          JWTTokenServices.refreshTokens();
         }
       }
     };

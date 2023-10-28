@@ -24,6 +24,7 @@ import { BsPeople, BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import TaskServices from "../services/TaskServices";
 import { API_ROOM_URL } from "../config/apiUrls";
 import { ToastContainer, toast } from "react-toastify";
+import JWTTokenServices from "../services/JWTTokenServices";
 
 export default function Room() {
   const user = useOutletContext();
@@ -73,7 +74,9 @@ export default function Room() {
         console.error(err);
 
         if (err.response.status === 404) {
-          toast.error(err.response.data);
+          window.location.replace("/404");
+        } else if (err.response.status === 401) {
+          JWTTokenServices.refreshTokens();
         } else {
           toast.error("Something is wrong. Try to refresh the page.");
         }

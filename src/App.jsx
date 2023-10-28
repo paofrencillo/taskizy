@@ -19,20 +19,21 @@ export default function App() {
     <>
       <Router basename="/">
         <Routes>
+          <Route path="/activate/:uid/:token/" element={<Activate />} />
+          <Route
+            path="/password-reset/confirm/:uid/:token/"
+            element={<ResetPass />}
+          />
           <Route element={<PrivateRoute />}>
-            <Route path="/rooms" element={<Rooms />} />
             <Route path="/room/:room_id/:room_slug" element={<Room />} />
+            <Route path="/rooms" element={<Rooms />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/me" element={<Profile />} />
           </Route>
 
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/activate/:uid/:token/" element={<Activate />} />
-          <Route
-            path="/password-reset/confirm/:uid/:token/"
-            element={<ResetPass />}
-          />
+
           <Route path="/activate-success" element={<ActivateSuccess />} />
           <Route path="/400" element={<Error400 />} />
           <Route path="/403" element={<Error403 />} />

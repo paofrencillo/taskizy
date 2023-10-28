@@ -171,14 +171,14 @@ export default function Login() {
               Email
             </label>
             <div className="flex mb-4">
-              <span className="inline-flex items-center px-3 text-sm text-gray-700 bg-purple-100 border border-r-0 border-purple-300 rounded-l-md ">
+              <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-purple-300 border border-r-0 rounded-l-md ">
                 <MdMail />
               </span>
               <input
                 type="email"
                 id="email"
                 name="email"
-                className="rounded-r-md bg-gray-50 border text-gray-700  flex-1 min-w-0 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-2.5 group"
+                className="rounded-r-md bg-gray-50 border border-l-0 text-gray-800 flex-1 min-w-0 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-2.5"
                 placeholder="me@email.com"
                 required
               />
@@ -190,14 +190,14 @@ export default function Login() {
               Password
             </label>
             <div className="flex mb-4">
-              <span className="inline-flex items-center px-3 text-sm text-gray-700 bg-purple-100 border border-r-0 border-purple-300 rounded-l-md">
+              <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-purple-300 border border-r-0  rounded-l-md">
                 <FaKey />
               </span>
               <input
                 type="password"
                 id="password"
                 name="password"
-                className="rounded-r-md bg-gray-50 border text-gray-900  flex-1 min-w-0 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-2.5"
+                className="rounded-r-md bg-gray-50 border border-l-0 text-gray-800 flex-1 min-w-0 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-2.5"
                 placeholder="Enter your password"
                 required
               />

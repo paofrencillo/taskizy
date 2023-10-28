@@ -63,7 +63,7 @@ export default function Register() {
                 type="text"
                 id="first_name"
                 name="first_name"
-                className="rounded-md bg-gray-50 border text-gray-700 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-3"
+                className="rounded-md bg-gray-50 border text-gray-800 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-3"
                 placeholder="First Name"
                 onChange={autoCapitalize}
                 required
@@ -74,7 +74,7 @@ export default function Register() {
                 type="text"
                 id="last_name"
                 name="last_name"
-                className="rounded-md bg-gray-50 border text-gray-700 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-3"
+                className="rounded-md bg-gray-50 border text-gray-800 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-3"
                 placeholder="Last Name"
                 onChange={autoCapitalize}
                 required
@@ -85,7 +85,7 @@ export default function Register() {
                 type="email"
                 id="email"
                 name="email"
-                className="rounded-md bg-gray-50 border text-gray-700 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-3"
+                className="rounded-md bg-gray-50 border text-gray-800 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-3"
                 placeholder="me@email.com"
                 required
               />
@@ -96,7 +96,7 @@ export default function Register() {
                 type="password"
                 id="password"
                 name="password"
-                className="rounded-md bg-gray-50 border text-gray-900 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-3"
+                className="rounded-md bg-gray-50 border text-gray-800 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-3"
                 placeholder="Password"
                 required
               />
@@ -106,7 +106,7 @@ export default function Register() {
                 type="password"
                 id="re_password"
                 name="re_password"
-                className="rounded-md bg-gray-50 border text-gray-900 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-100 border-purple-300 p-3"
+                className="rounded-md bg-gray-50 border text-gray-800 flex-1 w-full text-sm focus:ring-0 focus:outline-0 focus:bg-purple-50 border-purple-300 p-3"
                 placeholder="Confirm Password"
                 required
               />

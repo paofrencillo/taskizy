@@ -38,3 +38,11 @@ For vercel, create a vercel.json file on the working directory and paste this co
 }
 ```
 
+Add this homepage into the package.json (any domain that will be used on this app will be accessible):
+```
+{
+"homepage": ".",
+...
+}
+```
+
